@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type FormEvent } from 'react';
 import Link from 'next/link';
 import {
   getAdvertisingConsent,
@@ -13,11 +13,12 @@ declare global {
   interface Window {
     turnstile?: {
       render: (
-        el: HTMLElement,
+        element: HTMLElement,
         options: {
           sitekey: string;
           callback: (token: string) => void;
           'expired-callback': () => void;
+          'error-callback': () => void;
         }
       ) => string;
       remove: (id: string) => void;
@@ -32,7 +33,7 @@ const enabled =
 const siteKey =
   process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || '';
 
-const UTM_STORAGE_KEY = 'highbike_ad_attribution';
+const UTM_STORAGE_KEY = 'heybike_ad_attribution';
 
 const UTM_KEYS = [
   'utm_source',
@@ -56,21 +57,31 @@ function saveUtmFromUrl() {
   try {
     const current = readCurrentUtm();
 
-    if (current.utm_source) {
+    if (
+      current.utm_source ||
+      current.utm_medium ||
+      current.utm_campaign
+    ) {
       sessionStorage.setItem(
         UTM_STORAGE_KEY,
         JSON.stringify(current)
       );
     }
   } catch {
-    // 저장소 접근 실패는 접수에 영향을 주지 않음
+    // 저장소 오류는 견적 접수에 영향을 주지 않습니다.
   }
 }
 
 function getUtm(): UtmData {
   const current = readCurrentUtm();
 
-  if (current.utm_source) return current;
+  if (
+    current.utm_source ||
+    current.utm_medium ||
+    current.utm_campaign
+  ) {
+    return current;
+  }
 
   try {
     const saved = JSON.parse(
@@ -93,11 +104,11 @@ function trackSuccessfulLead() {
   try {
     if (typeof window.fbq === 'function') {
       window.fbq('track', 'Lead', {
-        content_name: 'Motorcycle Buyback Inquiry',
+        content_name: 'HEYBIKE Motorcycle Buyback Inquiry',
       });
     }
   } catch {
-    // 광고 오류는 접수에 영향을 주지 않음
+    // Meta 오류는 견적 접수에 영향을 주지 않습니다.
   }
 
   try {
@@ -105,7 +116,7 @@ function trackSuccessfulLead() {
       window.karrotPixel.track('Lead');
     }
   } catch {
-    // 광고 오류는 접수에 영향을 주지 않음
+    // 당근 광고 오류는 견적 접수에 영향을 주지 않습니다.
   }
 }
 
@@ -113,14 +124,16 @@ export default function InquiryForm() {
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState('');
   const [ok, setOk] = useState(false);
+
   const [privacyConsent, setPrivacyConsent] = useState(false);
   const [advertisingConsent, setAdvertisingConsent] =
     useState(false);
+
   const [token, setToken] = useState('');
 
-  const form = useRef<HTMLFormElement>(null);
-  const captcha = useRef<HTMLDivElement>(null);
-  const widgetId = useRef<string | null>(null);
+  const formRef = useRef<HTMLFormElement>(null);
+  const captchaRef = useRef<HTMLDivElement>(null);
+  const widgetIdRef = useRef<string | null>(null);
 
   useEffect(() => {
     saveUtmFromUrl();
@@ -144,62 +157,69 @@ export default function InquiryForm() {
   }, []);
 
   useEffect(() => {
-    if (!enabled || !siteKey || !captcha.current) return;
+    if (!enabled || !siteKey || !captchaRef.current) {
+      return;
+    }
 
     let active = true;
+    let retryTimer: ReturnType<typeof setTimeout> | null =
+      null;
 
     const renderWidget = () => {
-      if (
-        !active ||
-        !captcha.current ||
-        !window.turnstile ||
-        widgetId.current !== null
-      ) {
+      if (!active || !captchaRef.current) return;
+
+      if (!window.turnstile) {
+        retryTimer = setTimeout(renderWidget, 150);
         return;
       }
 
-      widgetId.current = window.turnstile.render(
-        captcha.current,
+      if (widgetIdRef.current !== null) return;
+
+      widgetIdRef.current = window.turnstile.render(
+        captchaRef.current,
         {
           sitekey: siteKey,
-          callback: setToken,
+          callback: (value) => setToken(value),
           'expired-callback': () => setToken(''),
+          'error-callback': () => setToken(''),
         }
       );
     };
 
-    const existingScript = document.querySelector(
-      'script[src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"]'
-    ) as HTMLScriptElement | null;
+    const scriptUrl =
+      'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
 
-    let script = existingScript;
-    let createdScript = false;
+    let script = document.querySelector(
+      `script[src="${scriptUrl}"]`
+    ) as HTMLScriptElement | null;
 
     if (!script) {
       script = document.createElement('script');
-      script.src =
-        'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
+      script.src = scriptUrl;
       script.async = true;
       document.head.appendChild(script);
-      createdScript = true;
     }
 
     script.addEventListener('load', renderWidget);
+
     renderWidget();
 
     return () => {
       active = false;
+
       script?.removeEventListener('load', renderWidget);
 
-      if (
-        widgetId.current !== null &&
-        window.turnstile
-      ) {
-        window.turnstile.remove(widgetId.current);
-        widgetId.current = null;
+      if (retryTimer !== null) {
+        clearTimeout(retryTimer);
       }
 
-      if (createdScript) script?.remove();
+      if (
+        widgetIdRef.current !== null &&
+        window.turnstile
+      ) {
+        window.turnstile.remove(widgetIdRef.current);
+        widgetIdRef.current = null;
+      }
     };
   }, []);
 
@@ -216,12 +236,15 @@ export default function InquiryForm() {
     updateAdvertisingConsent(value);
   }
 
-  async function submit(
-    e: React.FormEvent<HTMLFormElement>
-  ) {
-    e.preventDefault();
+  async function submit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
 
-    if (!form.current || !privacyConsent || !token || busy) {
+    if (
+      !formRef.current ||
+      !privacyConsent ||
+      !token ||
+      busy
+    ) {
       return;
     }
 
@@ -230,9 +253,9 @@ export default function InquiryForm() {
     setOk(false);
 
     try {
-      const data = new FormData(form.current);
+      const data = new FormData(formRef.current);
 
-      // 삭제된 항목은 서버 호환성을 위해 빈 값 전송
+      // 서버 API와의 호환성을 유지합니다.
       data.set('model_year', '');
       data.set('mileage_km', '');
       data.set('condition_notes', '');
@@ -246,16 +269,18 @@ export default function InquiryForm() {
         data.set(key, utm[key]);
       }
 
-      const res = await fetch('/api/inquiries', {
+      const response = await fetch('/api/inquiries', {
         method: 'POST',
         body: data,
+        credentials: 'same-origin',
+        cache: 'no-store',
       });
 
-      const result = await res.json();
+      const result = await response.json().catch(() => ({}));
 
-      if (!res.ok) {
+      if (!response.ok) {
         throw new Error(
-          result.error || '신청을 처리하지 못했습니다.'
+          result.error || '견적 신청 처리에 실패했습니다.'
         );
       }
 
@@ -268,22 +293,35 @@ export default function InquiryForm() {
         '견적 신청이 접수되었습니다. 담당자가 확인 후 연락드리겠습니다.'
       );
 
-      form.current.reset();
+      formRef.current.reset();
+
       setPrivacyConsent(false);
       setToken('');
 
       if (
         window.turnstile &&
-        widgetId.current !== null
+        widgetIdRef.current !== null
       ) {
-        window.turnstile.reset(widgetId.current);
+        window.turnstile.reset(widgetIdRef.current);
       }
     } catch (err) {
+      setOk(false);
+
       setMessage(
         err instanceof Error
           ? err.message
           : '잠시 후 다시 시도해 주세요.'
       );
+
+      // 실패한 인증 토큰의 재사용을 방지합니다.
+      setToken('');
+
+      if (
+        window.turnstile &&
+        widgetIdRef.current !== null
+      ) {
+        window.turnstile.reset(widgetIdRef.current);
+      }
     } finally {
       setBusy(false);
     }
@@ -293,9 +331,8 @@ export default function InquiryForm() {
     return (
       <div className="formPanel">
         <div className="notice">
-          견적 신청 시스템 연결 및 개인정보 안내 설정을
-          확인 중입니다. 현재 온라인 접수는
-          비활성화되어 있습니다.
+          HEYBIKE 견적 신청 시스템을 준비 중입니다.
+          현재 온라인 접수는 비활성화되어 있습니다.
         </div>
       </div>
     );
@@ -303,7 +340,7 @@ export default function InquiryForm() {
 
   return (
     <form
-      ref={form}
+      ref={formRef}
       className="formPanel"
       onSubmit={submit}
     >
@@ -323,6 +360,7 @@ export default function InquiryForm() {
           연락처 *
           <input
             name="phone"
+            type="tel"
             required
             maxLength={20}
             inputMode="tel"
@@ -336,7 +374,7 @@ export default function InquiryForm() {
           <input
             name="manufacturer"
             maxLength={80}
-            placeholder="예: 혼다"
+            placeholder="예: 혼다, 야마하"
           />
         </label>
 
@@ -367,7 +405,7 @@ export default function InquiryForm() {
           padding: 16,
           border: '1px solid #d1d5db',
           borderRadius: 12,
-          background: '#fff',
+          background: '#ffffff',
           color: '#111827',
         }}
       >
@@ -386,8 +424,8 @@ export default function InquiryForm() {
             checked={
               privacyConsent && advertisingConsent
             }
-            onChange={(e) =>
-              updateAllConsent(e.target.checked)
+            onChange={(event) =>
+              updateAllConsent(event.target.checked)
             }
             style={{
               width: 20,
@@ -420,8 +458,8 @@ export default function InquiryForm() {
               <input
                 type="checkbox"
                 checked={privacyConsent}
-                onChange={(e) =>
-                  setPrivacyConsent(e.target.checked)
+                onChange={(event) =>
+                  setPrivacyConsent(event.target.checked)
                 }
                 required
                 style={{
@@ -430,6 +468,7 @@ export default function InquiryForm() {
                   flexShrink: 0,
                 }}
               />
+
               <span>
                 <strong>[필수]</strong>{' '}
                 견적 상담을 위한 개인정보
@@ -467,9 +506,9 @@ export default function InquiryForm() {
               <input
                 type="checkbox"
                 checked={advertisingConsent}
-                onChange={(e) =>
+                onChange={(event) =>
                   updateAdvertisingConsent(
-                    e.target.checked
+                    event.target.checked
                   )
                 }
                 style={{
@@ -478,6 +517,7 @@ export default function InquiryForm() {
                   flexShrink: 0,
                 }}
               />
+
               <span>
                 <strong>[선택]</strong>{' '}
                 Meta·당근 광고 성과 측정을 위한
@@ -497,20 +537,24 @@ export default function InquiryForm() {
               동의 시 홈페이지 방문 및 견적 신청
               완료 이벤트가 Meta와 당근에 전송될
               수 있습니다. 동의하지 않아도 견적
-              신청이 가능합니다. 동의는 화면
-              왼쪽 아래 광고 추적 설정에서
+              신청이 가능합니다. 광고 추적 동의는
+              홈페이지의 광고 추적 설정에서
               변경할 수 있습니다.
             </p>
           </div>
         </div>
       </div>
 
-      <div ref={captcha} className="captcha" />
+      <div ref={captchaRef} className="captcha" />
 
       <button
         className="btn primary full"
-        disabled={!privacyConsent || !token || busy}
         type="submit"
+        disabled={
+          !privacyConsent ||
+          !token ||
+          busy
+        }
       >
         {busy ? '접수 중...' : '무료 견적 신청'}
       </button>
