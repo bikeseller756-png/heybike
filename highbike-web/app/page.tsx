@@ -6,7 +6,6 @@ import InquiryForm from './inquiry-form';
 import {
   ArrowRight,
   ArrowUpRight,
-  Check,
   ChevronDown,
   Menu,
   X,
@@ -14,29 +13,28 @@ import {
   ClipboardList,
   MessagesSquare,
   BadgeCheck,
-  MoveRight,
 } from 'lucide-react';
 
 const steps = [
   {
     number: '01',
-    title: '견적 신청',
-    description: '간단한 차량 정보와 연락처를 남겨주세요.',
+    title: '견적 상담 신청',
+    description: '차량 정보와 연락처를 남겨주세요.',
   },
   {
     number: '02',
-    title: '상담 및 조건 안내',
-    description: '차량 정보를 확인하고 매입 조건을 협의합니다.',
+    title: '매입 조건 상담',
+    description: '차량 정보를 바탕으로 매입 조건을 협의합니다.',
   },
   {
     number: '03',
-    title: '차량 확인',
+    title: '차량 상태 확인',
     description: '차량 상태와 관련 서류를 확인합니다.',
   },
   {
     number: '04',
     title: '계약 및 정산',
-    description: '최종 조건에 합의한 후 계약과 정산을 진행합니다.',
+    description: '최종 조건에 합의한 후 거래를 진행합니다.',
   },
 ];
 
@@ -54,7 +52,7 @@ const faqs = [
   {
     question: '할부가 남아 있어도 신청할 수 있나요?',
     answer:
-      '신청 가능합니다. 다만 할부 잔액과 권리관계 확인 후 거래 가능 여부를 안내합니다.',
+      '신청 가능합니다. 할부 잔액과 권리관계 확인 후 거래 가능 여부를 안내합니다.',
   },
   {
     question: '매입 대금은 언제 지급되나요?',
@@ -115,84 +113,46 @@ export default function Home() {
         </div>
       </header>
 
-      <section className="heyHero" id="estimate">
-        <div className="heyContainer heyHeroGrid">
-          <div className="heyHeroCopy">
-            <div className="heyEyebrow">
-              <span className="heyPulse" />
-              HEYBIKE MOTORCYCLE BUYBACK
-            </div>
+      {/* 메인: 스포츠바이크 전체 배경 + 중앙 신청서 */}
+      <section className="heyFullHero" id="estimate">
+        <div className="heyFullHeroBackground" aria-hidden="true" />
+        <div className="heyFullHeroOverlay" aria-hidden="true" />
 
+        <div className="heyFullHeroInner">
+          <div className="heyFullHeroIntro">
+            <span className="heyFullHeroEyebrow">
+              HEYBIKE MOTORCYCLE BUYBACK
+            </span>
             <h1>
               내 오토바이,
               <br />
-              <span>얼마에 팔 수</span>
-              <br />
-              <span>있을까요?</span>
+              매입 견적 상담받기!
             </h1>
-
-            <p className="heyHeroDescription">
-              PCX부터 스포츠바이크까지,
-              내 바이크의 매입 조건이 궁금하다면?
+            <p>
+              PCX부터 스포츠바이크까지
               <br />
-              복잡한 절차 없이 헤이바이크에서 상담을 시작하세요.
+              내 바이크의 매입 조건을 간편하게 상담하세요.
             </p>
-
-            <div className="heyHeroActions">
-              <a href="#estimateForm" className="heyPrimaryButton">
-                무료 견적 상담하기
-                <ArrowUpRight size={20} />
-              </a>
-              <a href="#process" className="heySecondaryButton">
-                매입 절차 확인
-                <MoveRight size={19} />
-              </a>
-            </div>
-
-            <div className="heyTrustLine">
-              <span>
-                <Check size={17} /> 무료 상담
-              </span>
-              <span>
-                <Check size={17} /> 간편한 정보 입력
-              </span>
-              <span>
-                <Check size={17} /> 조건 확인 후 협의
-              </span>
-            </div>
-
-            <div className="heyHeroArtwork heySportbikeArtwork">
-              <img
-                src="/heybike-premium-scooter.png"
-                alt="HEYBIKE 스포츠바이크 홍보 이미지"
-                className="heySportbikeImage"
-              />
-              <span className="heySportbikeCaption">
-                HEYBIKE · YOUR BIKE, YOUR VALUE
-              </span>
-            </div>
           </div>
 
-          <div className="heyFormShell" id="estimateForm">
-            <div className="heyFormTop">
-              <span className="heyFormLabel">
-                FREE BUYBACK CONSULTATION
-              </span>
-              <h2>
-                오토바이
-                <br />
-                무료 매입 견적 상담
-              </h2>
+          <div
+            className="heyFullHeroForm"
+            id="estimateForm"
+          >
+            <div className="heyFullHeroFormHeading">
+              <span>FREE BUYBACK CONSULTATION</span>
+              <h2>무료 매입 견적 상담</h2>
               <p>
-                고객명과 연락처, 차량 정보를 입력하면
-                매입 조건 상담을 진행할 수 있습니다.
+                고객명과 연락처, 차량 정보를 입력해 주세요.
               </p>
             </div>
+
             <InquiryForm />
           </div>
         </div>
       </section>
 
+      {/* 서비스 소개 */}
       <section className="heyHighlights" id="why">
         <div className="heyContainer">
           <div className="heySectionHeading">
@@ -211,8 +171,8 @@ export default function Home() {
               </div>
               <h3>무료 매입 상담</h3>
               <p>
-                부담 없이 차량 정보를 남기고
-                매입 상담을 받아보세요.
+                차량 정보를 바탕으로 매입 조건을
+                상담할 수 있습니다.
               </p>
               <span>01 / CONSULTATION</span>
             </article>
@@ -223,8 +183,8 @@ export default function Home() {
               </div>
               <h3>간편한 신청</h3>
               <p>
-                복잡한 입력 없이 필요한
-                정보만으로 상담을 시작합니다.
+                필요한 기본 정보만으로
+                상담을 시작합니다.
               </p>
               <span>02 / SIMPLE PROCESS</span>
             </article>
@@ -233,10 +193,10 @@ export default function Home() {
               <div className="heyHighlightIcon">
                 <ShieldCheck size={27} />
               </div>
-              <h3>투명한 조건 협의</h3>
+              <h3>조건 확인 및 협의</h3>
               <p>
-                차량 상태와 관련 서류를
-                확인하고 조건을 안내합니다.
+                차량 상태와 관련 서류를 확인하고
+                거래 조건을 협의합니다.
               </p>
               <span>03 / TRANSPARENCY</span>
             </article>
@@ -244,6 +204,7 @@ export default function Home() {
         </div>
       </section>
 
+      {/* 매입 절차 */}
       <section className="heyProcess" id="process">
         <div className="heyContainer">
           <div className="heyProcessHeading">
@@ -256,7 +217,7 @@ export default function Home() {
               </h2>
             </div>
             <p>
-              신청부터 거래 완료까지,
+              상담부터 거래 완료까지
               <br />
               단계별로 안내합니다.
             </p>
@@ -279,12 +240,13 @@ export default function Home() {
         </div>
       </section>
 
+      {/* 중간 상담 안내 */}
       <section className="heyBanner">
         <div className="heyContainer heyBannerInner">
           <div>
             <span>HEYBIKE / MOTORCYCLE BUYBACK</span>
             <h2>
-              판매를 고민하고 있다면,
+              내 바이크 판매,
               <br />
               상담부터 시작하세요.
             </h2>
@@ -296,6 +258,7 @@ export default function Home() {
         </div>
       </section>
 
+      {/* FAQ */}
       <section className="heyFaq" id="faq">
         <div className="heyContainer heyFaqGrid">
           <div>
@@ -323,18 +286,20 @@ export default function Home() {
                   <span>{faq.question}</span>
                   <ChevronDown
                     size={21}
-                    className={
-                      openFaq === index ? 'active' : ''
-                    }
+                    className={openFaq === index ? 'active' : ''}
                   />
                 </button>
-                {openFaq === index && <p>{faq.answer}</p>}
+
+                {openFaq === index && (
+                  <p>{faq.answer}</p>
+                )}
               </div>
             ))}
           </div>
         </div>
       </section>
 
+      {/* 하단 CTA */}
       <section className="heyFinalCta">
         <div className="heyContainer heyFinalInner">
           <BadgeCheck size={40} />
@@ -344,12 +309,13 @@ export default function Home() {
             헤이바이크에서 상담하세요.
           </h2>
           <a href="#estimateForm" className="heyPrimaryButton">
-            견적 상담하기
+            무료 견적 상담
             <ArrowUpRight size={20} />
           </a>
         </div>
       </section>
 
+      {/* 푸터 */}
       <footer className="heyFooter">
         <div className="heyContainer">
           <div className="heyFooterTop">
@@ -357,6 +323,7 @@ export default function Home() {
               <span className="heyBrandSymbol">H.</span>
               <span>HEYBIKE</span>
             </a>
+
             <div className="heyFooterLinks">
               <a href="#why">서비스 소개</a>
               <a href="#process">매입 절차</a>
@@ -364,10 +331,12 @@ export default function Home() {
               <a href="/privacy">개인정보 처리방침</a>
             </div>
           </div>
+
           <p className="heyFooterNotice">
             운영 사업자 정보는 확정 후 안내됩니다.
             현재 온라인 견적 접수는 준비 중입니다.
           </p>
+
           <div className="heyCopyright">
             © {new Date().getFullYear()} HEYBIKE.
             ALL RIGHTS RESERVED.
