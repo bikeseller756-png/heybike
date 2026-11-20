@@ -186,3 +186,116 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* HEYBIKE HEADER RESTORE */
+
+.heySite .heyHeader {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  width: 100%;
+  background: #ffffff;
+  border-bottom: 1px solid #d9ebf7;
+}
+
+.heySite .heyNav {
+  width: min(1200px, calc(100% - 48px));
+  min-height: 76px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.heySite .heyBrand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: #173b60;
+  text-decoration: none;
+  font-size: 24px;
+  font-weight: 900;
+  letter-spacing: -1px;
+}
+
+.heySite .heyBrandSymbol {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  background: #159be8;
+  color: white;
+  font-size: 25px;
+  font-weight: 900;
+}
+
+.heySite .heyLinks {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+}
+
+.heySite .heyLinks a {
+  color: #294b68;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 750;
+}
+
+.heySite .heyLinks a:hover {
+  color: #159be8;
+}
+
+.heySite .heyLinks .heyNavCta {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 20px;
+  border-radius: 9px;
+  background: #159be8;
+  color: white;
+  font-weight: 800;
+}
+
+.heySite .heyMenuButton {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  border: 1px solid #cce7f7;
+  border-radius: 8px;
+  background: white;
+  color: #173b60;
+}
+
+@media (max-width: 800px) {
+  .heySite .heyNav {
+    width: calc(100% - 32px);
+    min-height: 68px;
+  }
+
+  .heySite .heyMenuButton {
+    display: inline-flex;
+  }
+
+  .heySite .heyLinks {
+    display: none;
+    position: absolute;
+    top: 68px;
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 20px;
+    padding: 22px;
+    background: white;
+    border-bottom: 1px solid #d9ebf7;
+    box-shadow: 0 15px 30px rgba(23, 59, 96, 0.12);
+  }
+
+  .heySite .heyLinks.open {
+    display: flex;
+  }
+}
