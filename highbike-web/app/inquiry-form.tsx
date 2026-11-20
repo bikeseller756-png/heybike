@@ -106,9 +106,7 @@ function getUtm(): UtmData {
 }
 
 function trackSuccessfulLead() {
-  if (getAdvertisingConsent() !== 'accepted') {
-    return;
-  }
+  if (getAdvertisingConsent() !== 'accepted') return;
 
   try {
     if (typeof window.fbq === 'function') {
@@ -117,17 +115,15 @@ function trackSuccessfulLead() {
       });
     }
   } catch {
-    // Meta 오류는 접수에 영향을 주지 않습니다.
+    // 광고 측정 오류는 접수에 영향을 주지 않습니다.
   }
 
   try {
-    if (
-      typeof window.karrotPixel?.track === 'function'
-    ) {
+    if (typeof window.karrotPixel?.track === 'function') {
       window.karrotPixel.track('Lead');
     }
   } catch {
-    // 당근 광고 오류는 접수에 영향을 주지 않습니다.
+    // 광고 측정 오류는 접수에 영향을 주지 않습니다.
   }
 }
 
@@ -136,12 +132,9 @@ export default function InquiryForm() {
   const [message, setMessage] = useState('');
   const [ok, setOk] = useState(false);
 
-  const [privacyConsent, setPrivacyConsent] =
-    useState(false);
-
+  const [privacyConsent, setPrivacyConsent] = useState(false);
   const [advertisingConsent, setAdvertisingConsent] =
     useState(false);
-
   const [token, setToken] = useState('');
 
   const formRef = useRef<HTMLFormElement>(null);
@@ -160,21 +153,15 @@ export default function InquiryForm() {
     };
 
     syncConsent();
-
     window.addEventListener(CONSENT_EVENT, syncConsent);
 
     return () => {
-      window.removeEventListener(
-        CONSENT_EVENT,
-        syncConsent
-      );
+      window.removeEventListener(CONSENT_EVENT, syncConsent);
     };
   }, []);
 
   useEffect(() => {
-    if (!canSubmit || !captchaRef.current) {
-      return;
-    }
+    if (!canSubmit || !captchaRef.current) return;
 
     let active = true;
     let retryTimer: ReturnType<typeof setTimeout> | null =
@@ -220,15 +207,9 @@ export default function InquiryForm() {
 
     return () => {
       active = false;
+      script?.removeEventListener('load', renderWidget);
 
-      script?.removeEventListener(
-        'load',
-        renderWidget
-      );
-
-      if (retryTimer !== null) {
-        clearTimeout(retryTimer);
-      }
+      if (retryTimer !== null) clearTimeout(retryTimer);
 
       if (
         widgetIdRef.current !== null &&
@@ -244,7 +225,6 @@ export default function InquiryForm() {
     if (!canSubmit) return;
 
     setAdvertisingConsent(value);
-
     saveAdvertisingConsent(
       value ? 'accepted' : 'rejected'
     );
@@ -257,15 +237,11 @@ export default function InquiryForm() {
     updateAdvertisingConsent(value);
   }
 
-  async function submit(
-    event: FormEvent<HTMLFormElement>
-  ) {
+  async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    // 비활성화 상태에서는 서버 요청을 실행하지 않습니다.
-    if (!canSubmit) {
-      return;
-    }
+    // 접수 비활성화 시 서버로 전송하지 않습니다.
+    if (!canSubmit) return;
 
     if (
       !formRef.current ||
@@ -283,11 +259,11 @@ export default function InquiryForm() {
     try {
       const data = new FormData(formRef.current);
 
-      // 기존 서버 API와의 호환성 유지
+      // 기존 서버 API 필드와의 호환성을 유지합니다.
+      data.set('manufacturer', '');
       data.set('model_year', '');
       data.set('mileage_km', '');
       data.set('condition_notes', '');
-
       data.set('consent', 'true');
       data.set('turnstileToken', token);
 
@@ -363,14 +339,9 @@ export default function InquiryForm() {
       onSubmit={submit}
     >
       {!canSubmit && (
-        <div
-          className="notice"
-          role="status"
-          style={{ marginBottom: 18 }}
-        >
+        <div className="notice" role="status">
           현재 온라인 견적 신청을 준비 중입니다.
-          아래 입력 항목은 미리보기용이며
-          실제 접수되지 않습니다.
+          입력 항목은 미리보기용이며 실제 접수되지 않습니다.
         </div>
       )}
 
@@ -427,40 +398,10 @@ export default function InquiryForm() {
               placeholder="예: 인천 서구"
             />
           </label>
-
-          <label>
-            제조사
-            <input
-              name="manufacturer"
-              maxLength={80}
-              placeholder="예: 혼다, 야마하"
-            />
-          </label>
         </div>
 
-        <div
-          style={{
-            marginTop: 20,
-            marginBottom: 18,
-            padding: 16,
-            border: '1px solid #d1d5db',
-            borderRadius: 12,
-            background: '#ffffff',
-            color: '#111827',
-          }}
-        >
-          <label
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 10,
-              fontWeight: 800,
-              fontSize: 15,
-              cursor: canSubmit
-                ? 'pointer'
-                : 'not-allowed',
-            }}
-          >
+        <div className="heyConsentBox">
+          <label className="heyConsentAll">
             <input
               type="checkbox"
               checked={
@@ -469,88 +410,39 @@ export default function InquiryForm() {
               onChange={(event) =>
                 updateAllConsent(event.target.checked)
               }
-              style={{
-                width: 20,
-                height: 20,
-                flexShrink: 0,
-              }}
             />
-            전체 동의하기
+            <strong>전체 동의하기</strong>
           </label>
 
-          <div
-            style={{
-              borderTop: '1px solid #e5e7eb',
-              marginTop: 14,
-              paddingTop: 14,
-              display: 'grid',
-              gap: 14,
-            }}
-          >
-            <div>
-              <label
-                style={{
-                  display: 'flex',
-                  alignItems: 'flex-start',
-                  gap: 10,
-                  fontSize: 13,
-                  cursor: canSubmit
-                    ? 'pointer'
-                    : 'not-allowed',
-                }}
-              >
+          <div className="heyConsentDetails">
+            <div className="heyConsentItem">
+              <label>
                 <input
                   type="checkbox"
                   checked={privacyConsent}
                   onChange={(event) =>
-                    setPrivacyConsent(
-                      event.target.checked
-                    )
+                    setPrivacyConsent(event.target.checked)
                   }
                   required
-                  style={{
-                    width: 18,
-                    height: 18,
-                    flexShrink: 0,
-                  }}
                 />
-
                 <span>
-                  <strong>[필수]</strong>{' '}
-                  견적 상담을 위한 개인정보
-                  수집·이용 동의
+                  <strong>[필수]</strong> 견적 상담을 위한
+                  개인정보 수집·이용 동의
                 </span>
               </label>
 
-              <div
-                style={{
-                  paddingLeft: 28,
-                  marginTop: 6,
-                  fontSize: 12,
-                }}
+              <Link
+                href="/privacy"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="heyPrivacyLink"
               >
-                <Link
-                  href="/privacy"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  개인정보 처리방침 내용 확인
-                </Link>
-              </div>
+                개인정보 처리방침 확인
+              </Link>
             </div>
 
-            <div>
-              <label
-                style={{
-                  display: 'flex',
-                  alignItems: 'flex-start',
-                  gap: 10,
-                  fontSize: 13,
-                  cursor: canSubmit
-                    ? 'pointer'
-                    : 'not-allowed',
-                }}
-              >
+            <div className="heyConsentItem">
+              <label>
                 <input
                   type="checkbox"
                   checked={advertisingConsent}
@@ -559,34 +451,17 @@ export default function InquiryForm() {
                       event.target.checked
                     )
                   }
-                  style={{
-                    width: 18,
-                    height: 18,
-                    flexShrink: 0,
-                  }}
                 />
-
                 <span>
-                  <strong>[선택]</strong>{' '}
-                  Meta·당근 광고 성과 측정을 위한
-                  추적 동의
+                  <strong>[선택]</strong> Meta·당근 광고
+                  성과 측정을 위한 추적 동의
                 </span>
               </label>
 
-              <p
-                style={{
-                  paddingLeft: 28,
-                  margin: '5px 0 0',
-                  fontSize: 12,
-                  lineHeight: 1.7,
-                  color: '#6b7280',
-                }}
-              >
-                동의 시 홈페이지 방문 및 견적 신청
-                완료 이벤트가 Meta와 당근에
-                전송될 수 있습니다.
-                동의하지 않아도 견적 신청이 가능합니다.
-                광고 추적 동의는 홈페이지의
+              <p className="heyConsentDescription">
+                동의 시 홈페이지 방문 및 견적 신청 완료
+                이벤트가 Meta와 당근에 전송될 수 있습니다.
+                동의하지 않아도 신청이 가능하며,
                 광고 추적 설정에서 변경할 수 있습니다.
               </p>
             </div>
@@ -594,10 +469,7 @@ export default function InquiryForm() {
         </div>
 
         {canSubmit && (
-          <div
-            ref={captchaRef}
-            className="captcha"
-          />
+          <div ref={captchaRef} className="captcha" />
         )}
 
         <button
