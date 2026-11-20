@@ -1,0 +1,349 @@
+
+/* ========================================
+   HEYBIKE CUSTOMER REVIEWS
+   ======================================== */
+
+.heyReviews {
+  --review-gap: 22px;
+  --review-card-width: calc(
+    (100% - (var(--review-gap) * 2)) / 3
+  );
+
+  width: 100%;
+  padding: 100px 0 90px;
+  background: #f5f8fc;
+  color: #172b46;
+  overflow: hidden;
+}
+
+.heyReviews *,
+.heyReviews *::before,
+.heyReviews *::after {
+  box-sizing: border-box;
+}
+
+.heyReviewsContainer {
+  width: min(1280px, calc(100% - 48px));
+  margin: 0 auto;
+}
+
+/* Heading */
+
+.heyReviewsHeading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 36px;
+}
+
+.heyReviewsEyebrow {
+  display: inline-block;
+  margin-bottom: 15px;
+  color: #2677db;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 2px;
+}
+
+.heyReviewsHeading h2 {
+  margin: 0;
+  font-size: clamp(28px, 3.2vw, 44px);
+  font-weight: 800;
+  line-height: 1.3;
+  letter-spacing: -1.6px;
+  color: #182c47;
+}
+
+.heyReviewsHeading h2 strong {
+  color: #2677db;
+  font-weight: 800;
+}
+
+.heyReviewsHeading p {
+  margin: 18px 0 0;
+  font-size: 15px;
+  line-height: 1.7;
+  color: #64748b;
+}
+
+/* Navigation */
+
+.heyReviewsControls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.heyReviewsControls button {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #dce4ef;
+  border-radius: 50%;
+  background: #ffffff;
+  color: #243b5a;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.heyReviewsControls button:hover {
+  background: #2677db;
+  color: #ffffff;
+  border-color: #2677db;
+  transform: translateY(-2px);
+}
+
+.heyReviewsControls button:focus-visible {
+  outline: 3px solid #2677db;
+  outline-offset: 3px;
+}
+
+/* Carousel */
+
+.heyReviewsViewport {
+  width: 100%;
+  overflow: hidden;
+  touch-action: pan-y;
+}
+
+.heyReviewsTrack {
+  display: flex;
+  gap: var(--review-gap);
+  align-items: stretch;
+  will-change: transform;
+}
+
+.heyReviewCard {
+  flex: 0 0 var(--review-card-width);
+  min-width: 0;
+  background: #ffffff;
+  border: 1px solid #e3eaf3;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 8px 28px rgba(25, 54, 91, 0.055);
+  transition:
+    box-shadow 0.25s ease,
+    border-color 0.25s ease;
+}
+
+.heyReviewCard:hover {
+  border-color: #c8d9f0;
+  box-shadow: 0 16px 40px rgba(25, 54, 91, 0.12);
+}
+
+/* Motorcycle image */
+
+.heyReviewImage {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: #eaf0f7;
+}
+
+.heyReviewImage img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.heyReviewCard:hover .heyReviewImage img {
+  transform: scale(1.035);
+}
+
+/* Review content */
+
+.heyReviewContent {
+  padding: 24px 24px 28px;
+}
+
+.heyReviewModel {
+  display: inline-block;
+  max-width: 100%;
+  padding: 8px 15px;
+  background: #eaf3ff;
+  border: 1px solid #cfe3ff;
+  border-radius: 100px;
+  color: #1765c4;
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+.heyReviewStars {
+  display: flex;
+  gap: 4px;
+  margin-top: 17px;
+  color: #f5b52e;
+}
+
+.heyReviewContent p {
+  margin: 16px 0 0;
+  color: #46566d;
+  font-size: 14px;
+  line-height: 1.85;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 5;
+  line-clamp: 5;
+  overflow: hidden;
+  min-height: 130px;
+}
+
+/* Footer */
+
+.heyReviewsFooter {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 24px;
+  padding-top: 18px;
+  border-top: 1px solid #dfe7f1;
+  color: #8b9bb0;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+/* ========================================
+   TABLET: 2 CARDS
+   ======================================== */
+
+@media (max-width: 1024px) {
+  .heyReviews {
+    --review-gap: 18px;
+    --review-card-width: calc(
+      (100% - var(--review-gap)) / 2
+    );
+
+    padding: 75px 0 70px;
+  }
+
+  .heyReviewsContainer {
+    width: min(100% - 40px, 900px);
+  }
+
+  .heyReviewsHeading h2 {
+    font-size: 34px;
+  }
+
+  .heyReviewContent {
+    padding: 20px;
+  }
+}
+
+/* ========================================
+   MOBILE: 1.3 CARDS
+   ======================================== */
+
+@media (max-width: 640px) {
+  .heyReviews {
+    --review-gap: 14px;
+    --review-card-width: calc(
+      (100% - (var(--review-gap) * 0.3)) / 1.3
+    );
+
+    padding: 60px 0 55px;
+  }
+
+  .heyReviewsContainer {
+    width: calc(100% - 32px);
+  }
+
+  .heyReviewsHeading {
+    align-items: flex-end;
+    gap: 12px;
+    margin-bottom: 25px;
+  }
+
+  .heyReviewsEyebrow {
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    margin-bottom: 12px;
+  }
+
+  .heyReviewsHeading h2 {
+    font-size: 27px;
+    letter-spacing: -1px;
+  }
+
+  .heyReviewsHeading p {
+    font-size: 12px;
+    margin-top: 12px;
+    line-height: 1.65;
+  }
+
+  .heyReviewsControls {
+    gap: 6px;
+  }
+
+  .heyReviewsControls button {
+    width: 34px;
+    height: 34px;
+  }
+
+  .heyReviewsControls button svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .heyReviewCard {
+    border-radius: 14px;
+  }
+
+  .heyReviewImage {
+    aspect-ratio: 4 / 3;
+  }
+
+  .heyReviewContent {
+    padding: 17px;
+  }
+
+  .heyReviewModel {
+    padding: 7px 12px;
+    font-size: 11px;
+  }
+
+  .heyReviewStars {
+    margin-top: 14px;
+  }
+
+  .heyReviewContent p {
+    font-size: 12px;
+    line-height: 1.8;
+    min-height: 110px;
+    margin-top: 12px;
+  }
+
+  .heyReviewsFooter {
+    margin-top: 18px;
+    font-size: 9px;
+    letter-spacing: 0.4px;
+  }
+}
+
+/* Accessibility */
+
+@media (prefers-reduced-motion: reduce) {
+  .heyReviews *,
+  .heyReviews *::before,
+  .heyReviews *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
