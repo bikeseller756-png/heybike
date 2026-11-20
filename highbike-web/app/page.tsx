@@ -4,7 +4,6 @@
 import { useState } from 'react';
 import InquiryForm from './inquiry-form';
 import CustomerReviews from './customer-reviews';
-import ConsultationStats from './consultation-stats';
 
 import {
   ArrowUpRight,
@@ -84,9 +83,7 @@ export default function Home() {
             <span>HEYBIKE</span>
           </a>
 
-          <nav
-            className={menuOpen ? 'heyLinks open' : 'heyLinks'}
-          >
+          <nav className={menuOpen ? 'heyLinks open' : 'heyLinks'}>
             <a href="#why" onClick={closeMenu}>
               헤이바이크 소개
             </a>
@@ -125,7 +122,7 @@ export default function Home() {
         </div>
       </header>
 
-      {/* 메인: BMW 배경 + 견적 신청서 + 상담 통계 */}
+      {/* BMW 메인 화면 */}
       <section className="heyFullHero" id="estimate">
         <div
           className="heyFullHeroBackground"
@@ -161,12 +158,8 @@ export default function Home() {
             id="estimateForm"
           >
             <div className="heyFullHeroFormHeading">
-              <span>
-                FREE BUYBACK CONSULTATION
-              </span>
-
+              <span>FREE BUYBACK CONSULTATION</span>
               <h2>무료 매입 견적 상담</h2>
-
               <p>
                 고객명과 연락처, 차량 정보를 입력해 주세요.
               </p>
@@ -175,9 +168,6 @@ export default function Home() {
             <InquiryForm />
           </div>
         </div>
-
-        {/* 첫 화면 하단 상담 통계 */}
-        <ConsultationStats />
       </section>
 
       {/* 서비스 소개 */}
@@ -202,15 +192,11 @@ export default function Home() {
               </div>
 
               <h3>무료 매입 상담</h3>
-
               <p>
                 차량 정보를 바탕으로 매입 조건을
                 상담할 수 있습니다.
               </p>
-
-              <span>
-                01 / CONSULTATION
-              </span>
+              <span>01 / CONSULTATION</span>
             </article>
 
             <article className="heyHighlightCard">
@@ -219,15 +205,11 @@ export default function Home() {
               </div>
 
               <h3>간편한 신청</h3>
-
               <p>
                 필요한 기본 정보만으로
                 상담을 시작합니다.
               </p>
-
-              <span>
-                02 / SIMPLE PROCESS
-              </span>
+              <span>02 / SIMPLE PROCESS</span>
             </article>
 
             <article className="heyHighlightCard">
@@ -236,21 +218,17 @@ export default function Home() {
               </div>
 
               <h3>조건 확인 및 협의</h3>
-
               <p>
                 차량 상태와 관련 서류를 확인하고
                 거래 조건을 협의합니다.
               </p>
-
-              <span>
-                03 / TRANSPARENCY
-              </span>
+              <span>03 / TRANSPARENCY</span>
             </article>
           </div>
         </div>
       </section>
 
-      {/* 고객 후기 */}
+      {/* 고객 후기 슬라이더 */}
       <div id="reviews">
         <CustomerReviews />
       </div>
@@ -300,13 +278,11 @@ export default function Home() {
         </div>
       </section>
 
-      {/* FAQ */}
+      {/* 자주 묻는 질문 */}
       <section className="heyFaq" id="faq">
         <div className="heyContainer heyFaqGrid">
           <div>
-            <span className="heySectionTag">
-              FAQ
-            </span>
+            <span className="heySectionTag">FAQ</span>
 
             <h2>
               자주 묻는
@@ -384,25 +360,11 @@ export default function Home() {
             </a>
 
             <div className="heyFooterLinks">
-              <a href="#why">
-                서비스 소개
-              </a>
-
-              <a href="#process">
-                매입 절차
-              </a>
-
-              <a href="#reviews">
-                고객 후기
-              </a>
-
-              <a href="#estimateForm">
-                견적 상담
-              </a>
-
-              <a href="/privacy">
-                개인정보 처리방침
-              </a>
+              <a href="#why">서비스 소개</a>
+              <a href="#process">매입 절차</a>
+              <a href="#reviews">고객 후기</a>
+              <a href="#estimateForm">견적 상담</a>
+              <a href="/privacy">개인정보 처리방침</a>
             </div>
           </div>
 
