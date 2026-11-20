@@ -2,7 +2,11 @@
 'use client';
 
 import { useState, type FormEvent } from 'react';
-import { LockKeyhole, ShieldCheck, LoaderCircle } from 'lucide-react';
+import {
+  LockKeyhole,
+  ShieldCheck,
+  LoaderCircle,
+} from 'lucide-react';
 
 export default function AdminPage() {
   const [password, setPassword] = useState('');
@@ -19,7 +23,9 @@ export default function AdminPage() {
     try {
       const response = await fetch('/api/admin/login', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+        },
         body: JSON.stringify({ password }),
         credentials: 'same-origin',
         cache: 'no-store',
@@ -27,13 +33,18 @@ export default function AdminPage() {
 
       if (!response.ok) {
         const result = await response.json().catch(() => ({}));
-        throw new Error(result.error || '로그인에 실패했습니다.');
+        throw new Error(
+          result.error || '로그인에 실패했습니다.'
+        );
       }
 
-      window.location.href = '/admin/dashboard';
+      setPassword('');
+      window.location.replace('/admin/dashboard');
     } catch (err) {
       setError(
-        err instanceof Error ? err.message : '다시 시도해 주세요.'
+        err instanceof Error
+          ? err.message
+          : '다시 시도해 주세요.'
       );
       setPassword('');
     } finally {
@@ -42,63 +53,91 @@ export default function AdminPage() {
   }
 
   return (
-    <main style={{
-      minHeight: '100vh',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      padding: 20,
-      background: 'linear-gradient(145deg, #07101e, #10264a)',
-      color: '#ffffff',
-      fontFamily: 'Arial, sans-serif',
-    }}>
-      <section style={{
-        width: '100%',
-        maxWidth: 420,
-        padding: 36,
-        borderRadius: 20,
-        background: '#111e32',
-        border: '1px solid #29405f',
-        boxShadow: '0 20px 60px rgba(0,0,0,.3)',
-      }}>
-        <div style={{ textAlign: 'center', marginBottom: 30 }}>
-          <ShieldCheck size={42} color="#38a4ff" />
-          <h1 style={{
-            fontSize: 30,
-            margin: '16px 0 8px',
-            fontWeight: 800,
-          }}>
-            HIGH<span style={{ color: '#38a4ff' }}>BIKE</span>
+    <main
+      style={{
+        minHeight: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: 20,
+        background:
+          'linear-gradient(145deg, #101a19, #183a32)',
+        color: '#ffffff',
+        fontFamily: 'Arial, sans-serif',
+      }}
+    >
+      <section
+        style={{
+          width: '100%',
+          maxWidth: 420,
+          padding: 36,
+          borderRadius: 20,
+          background: '#162923',
+          border: '1px solid #31594a',
+          boxShadow: '0 20px 60px rgba(0,0,0,.3)',
+        }}
+      >
+        <div
+          style={{
+            textAlign: 'center',
+            marginBottom: 30,
+          }}
+        >
+          <ShieldCheck size={42} color="#5de0a5" />
+
+          <h1
+            style={{
+              fontSize: 30,
+              margin: '16px 0 8px',
+              fontWeight: 800,
+            }}
+          >
+            HEY
+            <span style={{ color: '#5de0a5' }}>
+              BIKE
+            </span>
           </h1>
-          <p style={{ color: '#a9b9ce', fontSize: 14 }}>
-            관리자 전용 로그인
+
+          <p
+            style={{
+              color: '#b2c9be',
+              fontSize: 14,
+            }}
+          >
+            헤이바이크 관리자 전용 로그인
           </p>
         </div>
 
         <form onSubmit={handleLogin}>
-          <label htmlFor="admin-password" style={{
-            display: 'block',
-            marginBottom: 10,
-            fontSize: 14,
-          }}>
+          <label
+            htmlFor="admin-password"
+            style={{
+              display: 'block',
+              marginBottom: 10,
+              fontSize: 14,
+            }}
+          >
             관리자 비밀번호
           </label>
 
           <div style={{ position: 'relative' }}>
             <LockKeyhole
               size={19}
-              color="#8ea7c6"
+              color="#9dbbad"
               style={{
                 position: 'absolute',
                 left: 15,
                 top: 16,
               }}
             />
+
             <input
               id="admin-password"
               type="password"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={(e) =>
+                setPassword(e.target.value)
+              }
               autoComplete="current-password"
               required
               maxLength={256}
@@ -108,8 +147,8 @@ export default function AdminPage() {
                 boxSizing: 'border-box',
                 padding: '15px 15px 15px 46px',
                 borderRadius: 10,
-                border: '1px solid #36506f',
-                background: '#091526',
+                border: '1px solid #426455',
+                background: '#0d1d18',
                 color: '#ffffff',
                 fontSize: 15,
               }}
@@ -117,11 +156,14 @@ export default function AdminPage() {
           </div>
 
           {error && (
-            <p role="alert" style={{
-              color: '#ff9999',
-              fontSize: 13,
-              marginTop: 12,
-            }}>
+            <p
+              role="alert"
+              style={{
+                color: '#ff9999',
+                fontSize: 13,
+                marginTop: 12,
+              }}
+            >
               {error}
             </p>
           )}
@@ -135,7 +177,7 @@ export default function AdminPage() {
               padding: 15,
               border: 0,
               borderRadius: 10,
-              background: '#1688ed',
+              background: '#21a875',
               color: '#ffffff',
               fontSize: 16,
               fontWeight: 700,
@@ -145,22 +187,29 @@ export default function AdminPage() {
           >
             {busy ? (
               <>
-                <LoaderCircle size={16} style={{
-                  display: 'inline-block',
-                  marginRight: 8,
-                }} />
+                <LoaderCircle
+                  size={16}
+                  style={{
+                    display: 'inline-block',
+                    marginRight: 8,
+                  }}
+                />
                 로그인 확인 중...
               </>
-            ) : '관리자 로그인'}
+            ) : (
+              '관리자 로그인'
+            )}
           </button>
         </form>
 
-        <p style={{
-          textAlign: 'center',
-          color: '#8195ae',
-          fontSize: 12,
-          marginTop: 26,
-        }}>
+        <p
+          style={{
+            textAlign: 'center',
+            color: '#91aa9d',
+            fontSize: 12,
+            marginTop: 26,
+          }}
+        >
           승인된 관리자만 이용할 수 있습니다.
         </p>
       </section>
