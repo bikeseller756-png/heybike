@@ -213,6 +213,7 @@ a {
 
 /* =========================================
    CENTRAL CONSULTATION CARD
+   BACKGROUND OPACITY: 55%
 ========================================= */
 
 .heyFullHeroForm {
@@ -220,10 +221,17 @@ a {
   padding: 30px 34px;
   border: 1px solid rgba(255, 255, 255, 0.25);
   border-radius: 20px;
-  background: rgba(13, 35, 61, 0.82);
+
+  /* 불투명도 55% / 투명도 45% */
+  background: rgba(13, 35, 61, 0.55);
+
   color: #ffffff;
   box-shadow: 0 20px 65px rgba(0, 0, 0, 0.22);
-  backdrop-filter: blur(8px);
+
+  /* 오토바이 사진이 더 선명하게 비치도록 조정 */
+  -webkit-backdrop-filter: blur(2px);
+  backdrop-filter: blur(2px);
+
   scroll-margin-top: 95px;
 }
 
@@ -245,11 +253,12 @@ a {
   font-size: 30px;
   font-weight: 900;
   letter-spacing: -1px;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
 }
 
 .heyFullHeroFormHeading p {
   margin: 0;
-  color: #d7e9f7;
+  color: #eef7ff;
   font-size: 13px;
   line-height: 1.7;
 }
@@ -286,6 +295,7 @@ a {
   font-size: 13px;
   font-weight: 700;
   line-height: 1.5;
+  text-shadow: 0 1px 5px rgba(0, 0, 0, 0.35);
 }
 
 .heyFullHeroForm .fields input,
@@ -442,7 +452,7 @@ a {
 }
 
 /* =========================================
-   GENERAL PAGE SECTION FALLBACKS
+   GENERAL PAGE SECTIONS
 ========================================= */
 
 .heySite section {
