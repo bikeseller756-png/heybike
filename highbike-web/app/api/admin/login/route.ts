@@ -9,7 +9,7 @@ import {
 
 export const runtime = 'nodejs';
 
-const COOKIE_NAME = 'highbike_admin_session';
+const COOKIE_NAME = 'heybike_admin_session';
 const SESSION_SECONDS = 60 * 60 * 8;
 
 function fail(message: string, status: number) {
