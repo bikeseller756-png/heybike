@@ -4,6 +4,7 @@
 import { useState } from 'react';
 import InquiryForm from './inquiry-form';
 import CustomerReviews from './customer-reviews';
+import ConsultationStats from './consultation-stats';
 
 import {
   ArrowUpRight,
@@ -168,6 +169,9 @@ export default function Home() {
             <InquiryForm />
           </div>
         </div>
+
+        {/* 견적 신청서 바로 아래: 상단 통계만 유지 */}
+        <ConsultationStats />
       </section>
 
       {/* 서비스 소개 */}
