@@ -109,3 +109,7 @@
     font-size: 9px;
   }
 }
+/* BMW 메인 화면 밖의 중복 통계만 숨김 */
+.heySite .heyHeroStats:not(.heyFullHero .heyHeroStats) {
+  display: none !important;
+}
