@@ -20,7 +20,9 @@ type Inquiry = {
   utm_campaign: string | null;
 };
 
-function sourceName(source: string | null) {
+type Source = '메타 광고' | '당근 광고' | '카카오 광고' | '기타 / 미확인';
+
+function sourceName(source: string | null): Source {
   const value = (source || '').toLowerCase();
 
   if (
@@ -41,11 +43,24 @@ function sourceName(source: string | null) {
     return '당근 광고';
   }
 
-  return source ? source : '직접 방문 / 미확인';
+  if (
+    value.includes('kakao') ||
+    value.includes('카카오')
+  ) {
+    return '카카오 광고';
+  }
+
+  return '기타 / 미확인';
 }
 
 function formatDate(value: string) {
-  return new Date(value).toLocaleString('ko-KR', {
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    return '-';
+  }
+
+  return date.toLocaleString('ko-KR', {
     timeZone: 'Asia/Seoul',
   });
 }
@@ -53,6 +68,7 @@ function formatDate(value: string) {
 export default function AdminDashboard() {
   const [inquiries, setInquiries] = useState<Inquiry[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loggingOut, setLoggingOut] = useState(false);
   const [error, setError] = useState('');
   const [filter, setFilter] = useState('전체');
   const [search, setSearch] = useState('');
@@ -68,44 +84,78 @@ export default function AdminDashboard() {
       });
 
       if (response.status === 401) {
-        window.location.href = '/admin';
+        window.location.replace('/admin');
         return;
       }
 
       if (!response.ok) {
-        throw new Error('고객 신청 내역을 불러오지 못했습니다.');
+        throw new Error(
+          '고객 신청 내역을 불러오지 못했습니다.'
+        );
       }
 
       const result = await response.json();
-      setInquiries(result.inquiries || []);
+      setInquiries(
+        Array.isArray(result.inquiries)
+          ? result.inquiries
+          : []
+      );
     } catch (err) {
       setError(
-        err instanceof Error ? err.message : '오류가 발생했습니다.'
+        err instanceof Error
+          ? err.message
+          : '오류가 발생했습니다.'
       );
     } finally {
       setLoading(false);
     }
   }
 
+  async function handleLogout() {
+    if (loggingOut) return;
+
+    setLoggingOut(true);
+    setError('');
+
+    try {
+      const response = await fetch('/api/admin/logout', {
+        method: 'POST',
+        credentials: 'same-origin',
+        cache: 'no-store',
+      });
+
+      if (!response.ok) {
+        throw new Error('로그아웃에 실패했습니다.');
+      }
+
+      setInquiries([]);
+      window.location.replace('/admin');
+    } catch (err) {
+      setError(
+        err instanceof Error
+          ? err.message
+          : '로그아웃 중 오류가 발생했습니다.'
+      );
+      setLoggingOut(false);
+    }
+  }
+
   useEffect(() => {
-    loadInquiries();
+    void loadInquiries();
   }, []);
 
   const stats = useMemo(() => {
+    const count = (source: Source) =>
+      inquiries.filter(
+        (item) => sourceName(item.utm_source) === source
+      ).length;
+
     return {
       total: inquiries.length,
-      meta: inquiries.filter(
-        (item) => sourceName(item.utm_source) === '메타 광고'
-      ).length,
-      daangn: inquiries.filter(
-        (item) => sourceName(item.utm_source) === '당근 광고'
-      ).length,
-      other: inquiries.filter(
-        (item) =>
-          !['메타 광고', '당근 광고'].includes(
-            sourceName(item.utm_source)
-          )
-      ).length,
+      meta: count('메타 광고'),
+      daangn: count('당근 광고'),
+      kakao: count('카카오 광고'),
+      other: count('기타 / 미확인'),
     };
   }, [inquiries]);
 
@@ -137,14 +187,14 @@ export default function AdminDashboard() {
   }, [inquiries, filter, search]);
 
   const cardStyle: React.CSSProperties = {
-    background: '#14243b',
-    border: '1px solid #29405c',
+    background: '#162923',
+    border: '1px solid #31594a',
     borderRadius: 14,
     padding: 22,
   };
 
   const buttonStyle: React.CSSProperties = {
-    background: '#1686ed',
+    background: '#21a875',
     color: '#fff',
     border: 0,
     borderRadius: 8,
@@ -153,11 +203,19 @@ export default function AdminDashboard() {
     fontWeight: 700,
   };
 
+  const inputStyle: React.CSSProperties = {
+    padding: 12,
+    borderRadius: 8,
+    background: '#0d1d18',
+    color: '#fff',
+    border: '1px solid #426455',
+  };
+
   return (
     <main
       style={{
         minHeight: '100vh',
-        background: '#081322',
+        background: '#0d1d18',
         color: '#fff',
         fontFamily: 'Arial, sans-serif',
         padding: '32px 20px',
@@ -176,23 +234,55 @@ export default function AdminDashboard() {
         >
           <div>
             <h1 style={{ margin: 0, fontSize: 28 }}>
-              HIGH<span style={{ color: '#1686ed' }}>BIKE</span>
+              HEY
+              <span style={{ color: '#5de0a5' }}>
+                BIKE
+              </span>
             </h1>
-            <p style={{ color: '#9db0c7' }}>
+            <p style={{ color: '#b2c9be' }}>
               관리자 대시보드 · 고객 견적 신청 관리
             </p>
           </div>
 
-          <button onClick={loadInquiries} style={buttonStyle}>
-            새로고침
-          </button>
+          <div
+            style={{
+              display: 'flex',
+              gap: 10,
+              flexWrap: 'wrap',
+            }}
+          >
+            <button
+              type="button"
+              onClick={() => void loadInquiries()}
+              disabled={loading}
+              style={{
+                ...buttonStyle,
+                opacity: loading ? 0.6 : 1,
+              }}
+            >
+              새로고침
+            </button>
+
+            <button
+              type="button"
+              onClick={() => void handleLogout()}
+              disabled={loggingOut}
+              style={{
+                ...buttonStyle,
+                background: '#355346',
+                opacity: loggingOut ? 0.6 : 1,
+              }}
+            >
+              {loggingOut ? '로그아웃 중...' : '로그아웃'}
+            </button>
+          </div>
         </header>
 
         <section
           style={{
             display: 'grid',
             gridTemplateColumns:
-              'repeat(auto-fit, minmax(180px, 1fr))',
+              'repeat(auto-fit, minmax(170px, 1fr))',
             gap: 16,
             marginBottom: 28,
           }}
@@ -201,19 +291,29 @@ export default function AdminDashboard() {
             ['전체 신청', stats.total],
             ['메타 광고', stats.meta],
             ['당근 광고', stats.daangn],
+            ['카카오 광고', stats.kakao],
             ['기타 / 미확인', stats.other],
           ].map(([label, count]) => (
             <div key={label} style={cardStyle}>
-              <div style={{ color: '#9db0c7', marginBottom: 12 }}>
+              <div
+                style={{
+                  color: '#b2c9be',
+                  marginBottom: 12,
+                }}
+              >
                 {label}
               </div>
-              <strong style={{ fontSize: 32 }}>{count}건</strong>
+              <strong style={{ fontSize: 32 }}>
+                {count}건
+              </strong>
             </div>
           ))}
         </section>
 
         <section style={cardStyle}>
-          <h2 style={{ marginTop: 0 }}>고객 견적 신청 목록</h2>
+          <h2 style={{ marginTop: 0 }}>
+            고객 견적 신청 목록
+          </h2>
 
           <div
             style={{
@@ -226,18 +326,13 @@ export default function AdminDashboard() {
             <select
               value={filter}
               onChange={(e) => setFilter(e.target.value)}
-              style={{
-                padding: 12,
-                borderRadius: 8,
-                background: '#081322',
-                color: '#fff',
-                border: '1px solid #38516d',
-              }}
+              style={inputStyle}
             >
               <option>전체</option>
               <option>메타 광고</option>
               <option>당근 광고</option>
-              <option>직접 방문 / 미확인</option>
+              <option>카카오 광고</option>
+              <option>기타 / 미확인</option>
             </select>
 
             <input
@@ -245,23 +340,23 @@ export default function AdminDashboard() {
               onChange={(e) => setSearch(e.target.value)}
               placeholder="고객명, 전화번호, 차종 검색"
               style={{
+                ...inputStyle,
                 flex: 1,
                 minWidth: 200,
-                padding: 12,
-                borderRadius: 8,
-                background: '#081322',
-                color: '#fff',
-                border: '1px solid #38516d',
               }}
             />
           </div>
 
+          {error && (
+            <p role="alert" style={{ color: '#ff9999' }}>
+              {error}
+            </p>
+          )}
+
           {loading ? (
             <p>신청 내역을 불러오는 중입니다...</p>
-          ) : error ? (
-            <p style={{ color: '#ff7777' }}>{error}</p>
           ) : filtered.length === 0 ? (
-            <p style={{ color: '#9db0c7' }}>
+            <p style={{ color: '#b2c9be' }}>
               표시할 견적 신청 내역이 없습니다.
             </p>
           ) : (
@@ -271,18 +366,16 @@ export default function AdminDashboard() {
                   width: '100%',
                   borderCollapse: 'collapse',
                   textAlign: 'left',
-                  minWidth: 1050,
+                  minWidth: 900,
                 }}
               >
                 <thead>
-                  <tr style={{ color: '#9db0c7' }}>
+                  <tr style={{ color: '#b2c9be' }}>
                     {[
                       '신청일',
                       '고객명',
                       '연락처',
                       '제조사 / 모델',
-                      '연식',
-                      '주행거리',
                       '지역',
                       '유입 경로',
                       '광고 캠페인',
@@ -292,7 +385,8 @@ export default function AdminDashboard() {
                         key={heading}
                         style={{
                           padding: 12,
-                          borderBottom: '1px solid #38516d',
+                          borderBottom:
+                            '1px solid #426455',
                         }}
                       >
                         {heading}
@@ -300,6 +394,7 @@ export default function AdminDashboard() {
                     ))}
                   </tr>
                 </thead>
+
                 <tbody>
                   {filtered.map((item) => (
                     <tr key={item.id}>
@@ -313,17 +408,12 @@ export default function AdminDashboard() {
                         {item.phone}
                       </td>
                       <td style={{ padding: 12 }}>
-                        {[item.manufacturer, item.model]
+                        {[
+                          item.manufacturer,
+                          item.model,
+                        ]
                           .filter(Boolean)
                           .join(' ')}
-                      </td>
-                      <td style={{ padding: 12 }}>
-                        {item.model_year || '-'}
-                      </td>
-                      <td style={{ padding: 12 }}>
-                        {item.mileage_km == null
-                          ? '-'
-                          : item.mileage_km.toLocaleString() + 'km'}
                       </td>
                       <td style={{ padding: 12 }}>
                         {item.location || '-'}
@@ -346,13 +436,13 @@ export default function AdminDashboard() {
 
           <p
             style={{
-              color: '#9db0c7',
+              color: '#b2c9be',
               fontSize: 12,
               marginTop: 20,
             }}
           >
-            최근 신청 100건 기준 · 광고 출처는 UTM 정보가
-            전달된 경우에만 구분됩니다.
+            최근 신청 100건 기준 · 광고 출처는
+            UTM 정보가 전달된 경우에만 구분됩니다.
           </p>
         </section>
       </div>
