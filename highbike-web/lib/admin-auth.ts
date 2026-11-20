@@ -1,11 +1,10 @@
-
 import {
   createHmac,
   timingSafeEqual,
 } from 'node:crypto';
 
 export const ADMIN_COOKIE_NAME =
-  'highbike_admin_session';
+  'heybike_admin_session';
 
 export function verifyAdminSession(
   cookieValue: string | undefined
