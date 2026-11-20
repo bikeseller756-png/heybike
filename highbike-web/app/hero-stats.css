@@ -10,20 +10,22 @@
   padding-bottom: 28px;
 }
 
-.heyHeroStats {
+/* BMW 메인 화면 통계 유지 */
+
+.heyFullHero > .heyHeroStats {
   position: relative;
   z-index: 2;
   width: min(1200px, 100%);
   margin: auto auto 0;
 }
 
-.heyHeroStats .heyHeroStatsGrid {
+.heyFullHero > .heyHeroStats .heyHeroStatsGrid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 14px;
 }
 
-.heyHeroStats .heyHeroStatCard {
+.heyFullHero > .heyHeroStats .heyHeroStatCard {
   min-width: 0;
   padding: 18px 20px;
   border: 1px solid rgba(255, 255, 255, 0.28);
@@ -34,7 +36,7 @@
   -webkit-backdrop-filter: blur(6px);
 }
 
-.heyHeroStats .heyHeroStatLabel {
+.heyFullHero > .heyHeroStats .heyHeroStatLabel {
   display: block;
   margin-bottom: 8px;
   font-size: 12px;
@@ -42,7 +44,7 @@
   color: #e0efff;
 }
 
-.heyHeroStats .heyHeroStatNumber {
+.heyFullHero > .heyHeroStats .heyHeroStatNumber {
   display: block;
   font-size: clamp(24px, 3vw, 36px);
   font-weight: 900;
@@ -51,11 +53,17 @@
   font-variant-numeric: tabular-nums;
 }
 
-.heyHeroStats .heyHeroStatsNote {
+.heyFullHero > .heyHeroStats .heyHeroStatsNote {
   margin: 9px 2px 0;
   color: #e0efff;
   font-size: 10px;
   text-align: right;
+}
+
+/* BMW 메인 화면 밖에 있는 중복 통계 숨김 */
+
+.heySite .heyHeroStats:not(.heyFullHero .heyHeroStats) {
+  display: none !important;
 }
 
 @media (max-width: 800px) {
@@ -63,19 +71,19 @@
     gap: 22px;
   }
 
-  .heyHeroStats .heyHeroStatsGrid {
+  .heyFullHero > .heyHeroStats .heyHeroStatsGrid {
     gap: 8px;
   }
 
-  .heyHeroStats .heyHeroStatCard {
+  .heyFullHero > .heyHeroStats .heyHeroStatCard {
     padding: 14px 10px;
   }
 
-  .heyHeroStats .heyHeroStatLabel {
+  .heyFullHero > .heyHeroStats .heyHeroStatLabel {
     font-size: 10px;
   }
 
-  .heyHeroStats .heyHeroStatNumber {
+  .heyFullHero > .heyHeroStats .heyHeroStatNumber {
     font-size: clamp(17px, 3.5vw, 25px);
   }
 }
@@ -85,27 +93,27 @@
     gap: 18px;
   }
 
-  .heyHeroStats .heyHeroStatsGrid {
+  .heyFullHero > .heyHeroStats .heyHeroStatsGrid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 6px;
   }
 
-  .heyHeroStats .heyHeroStatCard {
+  .heyFullHero > .heyHeroStats .heyHeroStatCard {
     padding: 12px 7px;
     border-radius: 10px;
   }
 
-  .heyHeroStats .heyHeroStatLabel {
+  .heyFullHero > .heyHeroStats .heyHeroStatLabel {
     font-size: 9px;
     line-height: 1.4;
   }
 
-  .heyHeroStats .heyHeroStatNumber {
+  .heyFullHero > .heyHeroStats .heyHeroStatNumber {
     font-size: clamp(15px, 4vw, 20px);
     letter-spacing: -0.5px;
   }
 
-  .heyHeroStats .heyHeroStatsNote {
+  .heyFullHero > .heyHeroStats .heyHeroStatsNote {
     font-size: 9px;
   }
 }
