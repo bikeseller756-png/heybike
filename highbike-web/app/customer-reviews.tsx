@@ -88,11 +88,7 @@ export default function CustomerReviews() {
           </span>
 
           <h2>
-            헤이바이크를 이용한
-            <br />
-            고객들의 이야기.
-          </h2>
-
+            헤이바이크를 이용한 고객들의 이야기. </h2>
           <p>
             실제 등록된 고객 후기를 확인해 보세요.
           </p>
