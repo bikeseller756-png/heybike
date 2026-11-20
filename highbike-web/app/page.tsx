@@ -3,8 +3,9 @@
 
 import { useState } from 'react';
 import InquiryForm from './inquiry-form';
+import CustomerReviews from './customer-reviews';
+
 import {
-  ArrowRight,
   ArrowUpRight,
   ChevronDown,
   Menu,
@@ -69,6 +70,7 @@ export default function Home() {
 
   return (
     <main className="heySite" id="top">
+      {/* 상단 메뉴 */}
       <header className="heyHeader">
         <div className="heyContainer heyNav">
           <a
@@ -81,16 +83,27 @@ export default function Home() {
             <span>HEYBIKE</span>
           </a>
 
-          <nav className={menuOpen ? 'heyLinks open' : 'heyLinks'}>
+          <nav
+            className={
+              menuOpen ? 'heyLinks open' : 'heyLinks'
+            }
+          >
             <a href="#why" onClick={closeMenu}>
               헤이바이크 소개
             </a>
+
             <a href="#process" onClick={closeMenu}>
               매입 절차
             </a>
+
+            <a href="#reviews" onClick={closeMenu}>
+              고객 후기
+            </a>
+
             <a href="#faq" onClick={closeMenu}>
               자주 묻는 질문
             </a>
+
             <a
               className="heyNavCta"
               href="#estimateForm"
@@ -104,34 +117,53 @@ export default function Home() {
           <button
             className="heyMenuButton"
             type="button"
-            aria-label={menuOpen ? '메뉴 닫기' : '메뉴 열기'}
+            aria-label={
+              menuOpen ? '메뉴 닫기' : '메뉴 열기'
+            }
             aria-expanded={menuOpen}
             onClick={() => setMenuOpen(!menuOpen)}
           >
-            {menuOpen ? <X size={25} /> : <Menu size={25} />}
+            {menuOpen ? (
+              <X size={25} />
+            ) : (
+              <Menu size={25} />
+            )}
           </button>
         </div>
       </header>
 
-      {/* 메인: 스포츠바이크 전체 배경 + 중앙 신청서 */}
-      <section className="heyFullHero" id="estimate">
-        <div className="heyFullHeroBackground" aria-hidden="true" />
-        <div className="heyFullHeroOverlay" aria-hidden="true" />
+      {/* 메인: 기존 BMW 배경 + 중앙 견적 신청서 */}
+      <section
+        className="heyFullHero"
+        id="estimate"
+      >
+        <div
+          className="heyFullHeroBackground"
+          aria-hidden="true"
+        />
+
+        <div
+          className="heyFullHeroOverlay"
+          aria-hidden="true"
+        />
 
         <div className="heyFullHeroInner">
           <div className="heyFullHeroIntro">
             <span className="heyFullHeroEyebrow">
               HEYBIKE MOTORCYCLE BUYBACK
             </span>
+
             <h1>
               내 오토바이,
               <br />
               매입 견적 상담받기!
             </h1>
+
             <p>
               PCX부터 스포츠바이크까지
               <br />
-              내 바이크의 매입 조건을 간편하게 상담하세요.
+              내 바이크의 매입 조건을
+              간편하게 상담하세요.
             </p>
           </div>
 
@@ -140,10 +172,15 @@ export default function Home() {
             id="estimateForm"
           >
             <div className="heyFullHeroFormHeading">
-              <span>FREE BUYBACK CONSULTATION</span>
+              <span>
+                FREE BUYBACK CONSULTATION
+              </span>
+
               <h2>무료 매입 견적 상담</h2>
+
               <p>
-                고객명과 연락처, 차량 정보를 입력해 주세요.
+                고객명과 연락처, 차량 정보를
+                입력해 주세요.
               </p>
             </div>
 
@@ -153,10 +190,16 @@ export default function Home() {
       </section>
 
       {/* 서비스 소개 */}
-      <section className="heyHighlights" id="why">
+      <section
+        className="heyHighlights"
+        id="why"
+      >
         <div className="heyContainer">
           <div className="heySectionHeading">
-            <span className="heySectionTag">WHY HEYBIKE</span>
+            <span className="heySectionTag">
+              WHY HEYBIKE
+            </span>
+
             <h2>
               바이크 거래의 시작을
               <br />
@@ -169,53 +212,75 @@ export default function Home() {
               <div className="heyHighlightIcon">
                 <MessagesSquare size={27} />
               </div>
+
               <h3>무료 매입 상담</h3>
+
               <p>
-                차량 정보를 바탕으로 매입 조건을
-                상담할 수 있습니다.
+                차량 정보를 바탕으로
+                매입 조건을 상담할 수 있습니다.
               </p>
-              <span>01 / CONSULTATION</span>
+
+              <span>
+                01 / CONSULTATION
+              </span>
             </article>
 
             <article className="heyHighlightCard">
               <div className="heyHighlightIcon">
                 <ClipboardList size={27} />
               </div>
+
               <h3>간편한 신청</h3>
+
               <p>
                 필요한 기본 정보만으로
                 상담을 시작합니다.
               </p>
-              <span>02 / SIMPLE PROCESS</span>
+
+              <span>
+                02 / SIMPLE PROCESS
+              </span>
             </article>
 
             <article className="heyHighlightCard">
               <div className="heyHighlightIcon">
                 <ShieldCheck size={27} />
               </div>
+
               <h3>조건 확인 및 협의</h3>
+
               <p>
                 차량 상태와 관련 서류를 확인하고
                 거래 조건을 협의합니다.
               </p>
-              <span>03 / TRANSPARENCY</span>
+
+              <span>
+                03 / TRANSPARENCY
+              </span>
             </article>
           </div>
         </div>
       </section>
 
       {/* 매입 절차 */}
-      <section className="heyProcess" id="process">
+      <section
+        className="heyProcess"
+        id="process"
+      >
         <div className="heyContainer">
           <div className="heyProcessHeading">
             <div>
-              <span className="heySectionTag">HOW IT WORKS</span>
+              <span className="heySectionTag">
+                HOW IT WORKS
+              </span>
+
               <h2>
                 매입 절차는
                 <br />
                 단 4단계.
               </h2>
             </div>
+
             <p>
               상담부터 거래 완료까지
               <br />
@@ -225,14 +290,19 @@ export default function Home() {
 
           <div className="heySteps">
             {steps.map((step) => (
-              <article className="heyStep" key={step.number}>
+              <article
+                className="heyStep"
+                key={step.number}
+              >
                 <span className="heyStepNumber">
                   {step.number}
                 </span>
+
                 <div>
                   <h3>{step.title}</h3>
                   <p>{step.description}</p>
                 </div>
+
                 <ArrowUpRight size={23} />
               </article>
             ))}
@@ -240,34 +310,28 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 중간 상담 안내 */}
-      <section className="heyBanner">
-        <div className="heyContainer heyBannerInner">
-          <div>
-            <span>HEYBIKE / MOTORCYCLE BUYBACK</span>
-            <h2>
-              내 바이크 판매,
-              <br />
-              상담부터 시작하세요.
-            </h2>
-          </div>
-          <a href="#estimateForm" className="heyBannerButton">
-            무료 견적 상담
-            <ArrowRight size={20} />
-          </a>
-        </div>
-      </section>
+      {/* 고객 후기 무한 슬라이더 */}
+      <div id="reviews">
+        <CustomerReviews />
+      </div>
 
       {/* FAQ */}
-      <section className="heyFaq" id="faq">
+      <section
+        className="heyFaq"
+        id="faq"
+      >
         <div className="heyContainer heyFaqGrid">
           <div>
-            <span className="heySectionTag">FAQ</span>
+            <span className="heySectionTag">
+              FAQ
+            </span>
+
             <h2>
               자주 묻는
               <br />
               질문.
             </h2>
+
             <p className="heyFaqDescription">
               상담 전에 궁금한 내용을 확인하세요.
             </p>
@@ -275,18 +339,34 @@ export default function Home() {
 
           <div className="heyFaqList">
             {faqs.map((faq, index) => (
-              <div className="heyFaqItem" key={faq.question}>
+              <div
+                className="heyFaqItem"
+                key={faq.question}
+              >
                 <button
                   type="button"
-                  aria-expanded={openFaq === index}
+                  aria-expanded={
+                    openFaq === index
+                  }
                   onClick={() =>
-                    setOpenFaq(openFaq === index ? null : index)
+                    setOpenFaq(
+                      openFaq === index
+                        ? null
+                        : index
+                    )
                   }
                 >
-                  <span>{faq.question}</span>
+                  <span>
+                    {faq.question}
+                  </span>
+
                   <ChevronDown
                     size={21}
-                    className={openFaq === index ? 'active' : ''}
+                    className={
+                      openFaq === index
+                        ? 'active'
+                        : ''
+                    }
                   />
                 </button>
 
@@ -299,16 +379,21 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 하단 CTA */}
+      {/* 하단 상담 안내 */}
       <section className="heyFinalCta">
         <div className="heyContainer heyFinalInner">
           <BadgeCheck size={40} />
+
           <h2>
             내 바이크,
             <br />
             헤이바이크에서 상담하세요.
           </h2>
-          <a href="#estimateForm" className="heyPrimaryButton">
+
+          <a
+            href="#estimateForm"
+            className="heyPrimaryButton"
+          >
             무료 견적 상담
             <ArrowUpRight size={20} />
           </a>
@@ -319,16 +404,37 @@ export default function Home() {
       <footer className="heyFooter">
         <div className="heyContainer">
           <div className="heyFooterTop">
-            <a href="#top" className="heyBrand">
-              <span className="heyBrandSymbol">H.</span>
+            <a
+              href="#top"
+              className="heyBrand"
+            >
+              <span className="heyBrandSymbol">
+                H.
+              </span>
+
               <span>HEYBIKE</span>
             </a>
 
             <div className="heyFooterLinks">
-              <a href="#why">서비스 소개</a>
-              <a href="#process">매입 절차</a>
-              <a href="#estimateForm">견적 상담</a>
-              <a href="/privacy">개인정보 처리방침</a>
+              <a href="#why">
+                서비스 소개
+              </a>
+
+              <a href="#process">
+                매입 절차
+              </a>
+
+              <a href="#reviews">
+                고객 후기
+              </a>
+
+              <a href="#estimateForm">
+                견적 상담
+              </a>
+
+              <a href="/privacy">
+                개인정보 처리방침
+              </a>
             </div>
           </div>
 
