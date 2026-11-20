@@ -84,9 +84,7 @@ export default function Home() {
           </a>
 
           <nav
-            className={
-              menuOpen ? 'heyLinks open' : 'heyLinks'
-            }
+            className={menuOpen ? 'heyLinks open' : 'heyLinks'}
           >
             <a href="#why" onClick={closeMenu}>
               헤이바이크 소개
@@ -117,9 +115,7 @@ export default function Home() {
           <button
             className="heyMenuButton"
             type="button"
-            aria-label={
-              menuOpen ? '메뉴 닫기' : '메뉴 열기'
-            }
+            aria-label={menuOpen ? '메뉴 닫기' : '메뉴 열기'}
             aria-expanded={menuOpen}
             onClick={() => setMenuOpen(!menuOpen)}
           >
@@ -132,11 +128,8 @@ export default function Home() {
         </div>
       </header>
 
-      {/* 메인: 기존 BMW 배경 + 중앙 견적 신청서 */}
-      <section
-        className="heyFullHero"
-        id="estimate"
-      >
+      {/* 메인: 기존 BMW 배경 + 중앙 신청서 */}
+      <section className="heyFullHero" id="estimate">
         <div
           className="heyFullHeroBackground"
           aria-hidden="true"
@@ -162,8 +155,7 @@ export default function Home() {
             <p>
               PCX부터 스포츠바이크까지
               <br />
-              내 바이크의 매입 조건을
-              간편하게 상담하세요.
+              내 바이크의 매입 조건을 간편하게 상담하세요.
             </p>
           </div>
 
@@ -179,8 +171,7 @@ export default function Home() {
               <h2>무료 매입 견적 상담</h2>
 
               <p>
-                고객명과 연락처, 차량 정보를
-                입력해 주세요.
+                고객명과 연락처, 차량 정보를 입력해 주세요.
               </p>
             </div>
 
@@ -190,10 +181,7 @@ export default function Home() {
       </section>
 
       {/* 서비스 소개 */}
-      <section
-        className="heyHighlights"
-        id="why"
-      >
+      <section className="heyHighlights" id="why">
         <div className="heyContainer">
           <div className="heySectionHeading">
             <span className="heySectionTag">
@@ -216,8 +204,8 @@ export default function Home() {
               <h3>무료 매입 상담</h3>
 
               <p>
-                차량 정보를 바탕으로
-                매입 조건을 상담할 수 있습니다.
+                차량 정보를 바탕으로 매입 조건을
+                상담할 수 있습니다.
               </p>
 
               <span>
@@ -262,11 +250,13 @@ export default function Home() {
         </div>
       </section>
 
+      {/* 고객 후기: 서비스 소개와 매입 절차 사이 */}
+      <div id="reviews">
+        <CustomerReviews />
+      </div>
+
       {/* 매입 절차 */}
-      <section
-        className="heyProcess"
-        id="process"
-      >
+      <section className="heyProcess" id="process">
         <div className="heyContainer">
           <div className="heyProcessHeading">
             <div>
@@ -310,16 +300,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 고객 후기 무한 슬라이더 */}
-      <div id="reviews">
-        <CustomerReviews />
-      </div>
-
       {/* FAQ */}
-      <section
-        className="heyFaq"
-        id="faq"
-      >
+      <section className="heyFaq" id="faq">
         <div className="heyContainer heyFaqGrid">
           <div>
             <span className="heySectionTag">
@@ -345,27 +327,19 @@ export default function Home() {
               >
                 <button
                   type="button"
-                  aria-expanded={
-                    openFaq === index
-                  }
+                  aria-expanded={openFaq === index}
                   onClick={() =>
                     setOpenFaq(
-                      openFaq === index
-                        ? null
-                        : index
+                      openFaq === index ? null : index
                     )
                   }
                 >
-                  <span>
-                    {faq.question}
-                  </span>
+                  <span>{faq.question}</span>
 
                   <ChevronDown
                     size={21}
                     className={
-                      openFaq === index
-                        ? 'active'
-                        : ''
+                      openFaq === index ? 'active' : ''
                     }
                   />
                 </button>
@@ -404,10 +378,7 @@ export default function Home() {
       <footer className="heyFooter">
         <div className="heyContainer">
           <div className="heyFooterTop">
-            <a
-              href="#top"
-              className="heyBrand"
-            >
+            <a href="#top" className="heyBrand">
               <span className="heyBrandSymbol">
                 H.
               </span>
