@@ -4,6 +4,7 @@
 import { useState } from 'react';
 import InquiryForm from './inquiry-form';
 import CustomerReviews from './customer-reviews';
+import ConsultationStats from './consultation-stats';
 
 import {
   ArrowUpRight,
@@ -119,16 +120,12 @@ export default function Home() {
             aria-expanded={menuOpen}
             onClick={() => setMenuOpen(!menuOpen)}
           >
-            {menuOpen ? (
-              <X size={25} />
-            ) : (
-              <Menu size={25} />
-            )}
+            {menuOpen ? <X size={25} /> : <Menu size={25} />}
           </button>
         </div>
       </header>
 
-      {/* 메인: 기존 BMW 배경 + 중앙 신청서 */}
+      {/* 메인: BMW 배경 + 견적 신청서 + 상담 통계 */}
       <section className="heyFullHero" id="estimate">
         <div
           className="heyFullHeroBackground"
@@ -178,6 +175,9 @@ export default function Home() {
             <InquiryForm />
           </div>
         </div>
+
+        {/* 첫 화면 하단 상담 통계 */}
+        <ConsultationStats />
       </section>
 
       {/* 서비스 소개 */}
@@ -250,7 +250,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 고객 후기: 서비스 소개와 매입 절차 사이 */}
+      {/* 고객 후기 */}
       <div id="reviews">
         <CustomerReviews />
       </div>
@@ -379,10 +379,7 @@ export default function Home() {
         <div className="heyContainer">
           <div className="heyFooterTop">
             <a href="#top" className="heyBrand">
-              <span className="heyBrandSymbol">
-                H.
-              </span>
-
+              <span className="heyBrandSymbol">H.</span>
               <span>HEYBIKE</span>
             </a>
 
