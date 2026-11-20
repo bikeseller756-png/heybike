@@ -1,7 +1,12 @@
 
 'use client';
 
-import { useEffect, useRef, useState, type FormEvent } from 'react';
+import {
+  useEffect,
+  useRef,
+  useState,
+  type FormEvent,
+} from 'react';
 import Link from 'next/link';
 import {
   getAdvertisingConsent,
@@ -24,6 +29,10 @@ declare global {
       remove: (id: string) => void;
       reset: (id?: string) => void;
     };
+    fbq?: (...args: unknown[]) => void;
+    karrotPixel?: {
+      track?: (event: string) => void;
+    };
   }
 }
 
@@ -32,6 +41,8 @@ const enabled =
 
 const siteKey =
   process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || '';
+
+const canSubmit = enabled && Boolean(siteKey);
 
 const UTM_STORAGE_KEY = 'heybike_ad_attribution';
 
@@ -68,7 +79,7 @@ function saveUtmFromUrl() {
       );
     }
   } catch {
-    // 저장소 오류는 견적 접수에 영향을 주지 않습니다.
+    // 광고 유입정보 저장 실패는 접수에 영향을 주지 않습니다.
   }
 }
 
@@ -99,7 +110,9 @@ function getUtm(): UtmData {
 }
 
 function trackSuccessfulLead() {
-  if (getAdvertisingConsent() !== 'accepted') return;
+  if (getAdvertisingConsent() !== 'accepted') {
+    return;
+  }
 
   try {
     if (typeof window.fbq === 'function') {
@@ -108,15 +121,17 @@ function trackSuccessfulLead() {
       });
     }
   } catch {
-    // Meta 오류는 견적 접수에 영향을 주지 않습니다.
+    // Meta 오류는 접수에 영향을 주지 않습니다.
   }
 
   try {
-    if (typeof window.karrotPixel?.track === 'function') {
+    if (
+      typeof window.karrotPixel?.track === 'function'
+    ) {
       window.karrotPixel.track('Lead');
     }
   } catch {
-    // 당근 광고 오류는 견적 접수에 영향을 주지 않습니다.
+    // 당근 광고 오류는 접수에 영향을 주지 않습니다.
   }
 }
 
@@ -125,7 +140,9 @@ export default function InquiryForm() {
   const [message, setMessage] = useState('');
   const [ok, setOk] = useState(false);
 
-  const [privacyConsent, setPrivacyConsent] = useState(false);
+  const [privacyConsent, setPrivacyConsent] =
+    useState(false);
+
   const [advertisingConsent, setAdvertisingConsent] =
     useState(false);
 
@@ -136,6 +153,8 @@ export default function InquiryForm() {
   const widgetIdRef = useRef<string | null>(null);
 
   useEffect(() => {
+    if (!canSubmit) return;
+
     saveUtmFromUrl();
 
     const syncConsent = () => {
@@ -157,7 +176,7 @@ export default function InquiryForm() {
   }, []);
 
   useEffect(() => {
-    if (!enabled || !siteKey || !captchaRef.current) {
+    if (!canSubmit || !captchaRef.current) {
       return;
     }
 
@@ -201,13 +220,15 @@ export default function InquiryForm() {
     }
 
     script.addEventListener('load', renderWidget);
-
     renderWidget();
 
     return () => {
       active = false;
 
-      script?.removeEventListener('load', renderWidget);
+      script?.removeEventListener(
+        'load',
+        renderWidget
+      );
 
       if (retryTimer !== null) {
         clearTimeout(retryTimer);
@@ -224,6 +245,8 @@ export default function InquiryForm() {
   }, []);
 
   function updateAdvertisingConsent(value: boolean) {
+    if (!canSubmit) return;
+
     setAdvertisingConsent(value);
 
     saveAdvertisingConsent(
@@ -232,12 +255,21 @@ export default function InquiryForm() {
   }
 
   function updateAllConsent(value: boolean) {
+    if (!canSubmit) return;
+
     setPrivacyConsent(value);
     updateAdvertisingConsent(value);
   }
 
-  async function submit(event: FormEvent<HTMLFormElement>) {
+  async function submit(
+    event: FormEvent<HTMLFormElement>
+  ) {
     event.preventDefault();
+
+    // 비활성화 상태에서는 API 요청을 실행하지 않습니다.
+    if (!canSubmit) {
+      return;
+    }
 
     if (
       !formRef.current ||
@@ -255,7 +287,7 @@ export default function InquiryForm() {
     try {
       const data = new FormData(formRef.current);
 
-      // 서버 API와의 호환성을 유지합니다.
+      // 기존 서버 API와 호환되는 빈 항목입니다.
       data.set('model_year', '');
       data.set('mileage_km', '');
       data.set('condition_notes', '');
@@ -276,11 +308,14 @@ export default function InquiryForm() {
         cache: 'no-store',
       });
 
-      const result = await response.json().catch(() => ({}));
+      const result = await response
+        .json()
+        .catch(() => ({}));
 
       if (!response.ok) {
         throw new Error(
-          result.error || '견적 신청 처리에 실패했습니다.'
+          result.error ||
+            '견적 신청 처리에 실패했습니다.'
         );
       }
 
@@ -294,7 +329,6 @@ export default function InquiryForm() {
       );
 
       formRef.current.reset();
-
       setPrivacyConsent(false);
       setToken('');
 
@@ -313,7 +347,6 @@ export default function InquiryForm() {
           : '잠시 후 다시 시도해 주세요.'
       );
 
-      // 실패한 인증 토큰의 재사용을 방지합니다.
       setToken('');
 
       if (
@@ -327,242 +360,274 @@ export default function InquiryForm() {
     }
   }
 
-  if (!enabled || !siteKey) {
-    return (
-      <div className="formPanel">
-        <div className="notice">
-          HEYBIKE 견적 신청 시스템을 준비 중입니다.
-          현재 온라인 접수는 비활성화되어 있습니다.
-        </div>
-      </div>
-    );
-  }
-
   return (
     <form
       ref={formRef}
       className="formPanel"
       onSubmit={submit}
     >
-      <div className="fields">
-        <label>
-          고객명 *
-          <input
-            name="customer_name"
-            required
-            maxLength={60}
-            autoComplete="name"
-            placeholder="성함"
-          />
-        </label>
+      {!canSubmit && (
+        <div
+          className="notice"
+          role="status"
+          style={{ marginBottom: 18 }}
+        >
+          현재 온라인 견적 신청을 준비 중입니다.
+          아래 입력 항목은 미리보기용이며
+          실제 접수되지 않습니다.
+        </div>
+      )}
 
-        <label>
-          연락처 *
-          <input
-            name="phone"
-            type="tel"
-            required
-            maxLength={20}
-            inputMode="tel"
-            autoComplete="tel"
-            placeholder="010-0000-0000"
-          />
-        </label>
-
-        <label>
-          제조사
-          <input
-            name="manufacturer"
-            maxLength={80}
-            placeholder="예: 혼다, 야마하"
-          />
-        </label>
-
-        <label>
-          모델명 *
-          <input
-            name="model"
-            required
-            maxLength={100}
-            placeholder="예: PCX125"
-          />
-        </label>
-
-        <label>
-          차량 소재지
-          <input
-            name="location"
-            maxLength={120}
-            placeholder="예: 인천 서구"
-          />
-        </label>
-      </div>
-
-      <div
+      <fieldset
+        disabled={!canSubmit}
         style={{
-          marginTop: 20,
-          marginBottom: 18,
-          padding: 16,
-          border: '1px solid #d1d5db',
-          borderRadius: 12,
-          background: '#ffffff',
-          color: '#111827',
+          border: 0,
+          margin: 0,
+          padding: 0,
+          minWidth: 0,
         }}
       >
-        <label
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 10,
-            fontWeight: 800,
-            fontSize: 16,
-            cursor: 'pointer',
-          }}
-        >
-          <input
-            type="checkbox"
-            checked={
-              privacyConsent && advertisingConsent
-            }
-            onChange={(event) =>
-              updateAllConsent(event.target.checked)
-            }
-            style={{
-              width: 20,
-              height: 20,
-              flexShrink: 0,
-            }}
-          />
-          전체 동의하기
-        </label>
+        <div className="fields">
+          <label>
+            모델명 *
+            <input
+              name="model"
+              required
+              maxLength={100}
+              placeholder="예: PCX125, NMAX, R6"
+              autoComplete="off"
+            />
+          </label>
+
+          <label>
+            고객명 *
+            <input
+              name="customer_name"
+              required
+              maxLength={60}
+              autoComplete="name"
+              placeholder="성함을 입력해 주세요"
+            />
+          </label>
+
+          <label>
+            연락처 *
+            <input
+              name="phone"
+              type="tel"
+              required
+              maxLength={20}
+              inputMode="tel"
+              autoComplete="tel"
+              placeholder="010-0000-0000"
+            />
+          </label>
+
+          <label>
+            차량 소재지
+            <input
+              name="location"
+              maxLength={120}
+              placeholder="예: 인천 서구"
+            />
+          </label>
+
+          <label>
+            제조사
+            <input
+              name="manufacturer"
+              maxLength={80}
+              placeholder="예: 혼다, 야마하"
+            />
+          </label>
+        </div>
 
         <div
           style={{
-            borderTop: '1px solid #e5e7eb',
-            marginTop: 14,
-            paddingTop: 14,
-            display: 'grid',
-            gap: 14,
+            marginTop: 20,
+            marginBottom: 18,
+            padding: 16,
+            border: '1px solid #d1d5db',
+            borderRadius: 12,
+            background: '#ffffff',
+            color: '#111827',
           }}
         >
-          <div>
-            <label
+          <label
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 10,
+              fontWeight: 800,
+              fontSize: 15,
+              cursor: canSubmit
+                ? 'pointer'
+                : 'not-allowed',
+            }}
+          >
+            <input
+              type="checkbox"
+              checked={
+                privacyConsent && advertisingConsent
+              }
+              onChange={(event) =>
+                updateAllConsent(event.target.checked)
+              }
               style={{
-                display: 'flex',
-                alignItems: 'flex-start',
-                gap: 10,
-                fontSize: 13,
-                cursor: 'pointer',
+                width: 20,
+                height: 20,
+                flexShrink: 0,
               }}
-            >
-              <input
-                type="checkbox"
-                checked={privacyConsent}
-                onChange={(event) =>
-                  setPrivacyConsent(event.target.checked)
-                }
-                required
+            />
+            전체 동의하기
+          </label>
+
+          <div
+            style={{
+              borderTop: '1px solid #e5e7eb',
+              marginTop: 14,
+              paddingTop: 14,
+              display: 'grid',
+              gap: 14,
+            }}
+          >
+            <div>
+              <label
                 style={{
-                  width: 18,
-                  height: 18,
-                  flexShrink: 0,
+                  display: 'flex',
+                  alignItems: 'flex-start',
+                  gap: 10,
+                  fontSize: 13,
+                  cursor: canSubmit
+                    ? 'pointer'
+                    : 'not-allowed',
                 }}
-              />
-
-              <span>
-                <strong>[필수]</strong>{' '}
-                견적 상담을 위한 개인정보
-                수집·이용 동의
-              </span>
-            </label>
-
-            <div
-              style={{
-                paddingLeft: 28,
-                marginTop: 5,
-                fontSize: 12,
-              }}
-            >
-              <Link
-                href="/privacy"
-                target="_blank"
-                rel="noopener noreferrer"
               >
-                개인정보 처리방침 내용 확인
-              </Link>
+                <input
+                  type="checkbox"
+                  checked={privacyConsent}
+                  onChange={(event) =>
+                    setPrivacyConsent(
+                      event.target.checked
+                    )
+                  }
+                  required
+                  style={{
+                    width: 18,
+                    height: 18,
+                    flexShrink: 0,
+                  }}
+                />
+
+                <span>
+                  <strong>[필수]</strong>{' '}
+                  견적 상담을 위한 개인정보
+                  수집·이용 동의
+                </span>
+              </label>
+
+              <div
+                style={{
+                  paddingLeft: 28,
+                  marginTop: 6,
+                  fontSize: 12,
+                }}
+              >
+                <Link
+                  href="/privacy"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  개인정보 처리방침 내용 확인
+                </Link>
+              </div>
+            </div>
+
+            <div>
+              <label
+                style={{
+                  display: 'flex',
+                  alignItems: 'flex-start',
+                  gap: 10,
+                  fontSize: 13,
+                  cursor: canSubmit
+                    ? 'pointer'
+                    : 'not-allowed',
+                }}
+              >
+                <input
+                  type="checkbox"
+                  checked={advertisingConsent}
+                  onChange={(event) =>
+                    updateAdvertisingConsent(
+                      event.target.checked
+                    )
+                  }
+                  style={{
+                    width: 18,
+                    height: 18,
+                    flexShrink: 0,
+                  }}
+                />
+
+                <span>
+                  <strong>[선택]</strong>{' '}
+                  Meta·당근 광고 성과 측정을 위한
+                  추적 동의
+                </span>
+              </label>
+
+              <p
+                style={{
+                  paddingLeft: 28,
+                  margin: '5px 0 0',
+                  fontSize: 12,
+                  lineHeight: 1.7,
+                  color: '#6b7280',
+                }}
+              >
+                동의 시 홈페이지 방문 및 견적 신청
+                완료 이벤트가 Meta와 당근에
+                전송될 수 있습니다.
+                동의하지 않아도 견적 신청이 가능합니다.
+                광고 추적 동의는 홈페이지의
+                광고 추적 설정에서 변경할 수 있습니다.
+              </p>
             </div>
           </div>
-
-          <div>
-            <label
-              style={{
-                display: 'flex',
-                alignItems: 'flex-start',
-                gap: 10,
-                fontSize: 13,
-                cursor: 'pointer',
-              }}
-            >
-              <input
-                type="checkbox"
-                checked={advertisingConsent}
-                onChange={(event) =>
-                  updateAdvertisingConsent(
-                    event.target.checked
-                  )
-                }
-                style={{
-                  width: 18,
-                  height: 18,
-                  flexShrink: 0,
-                }}
-              />
-
-              <span>
-                <strong>[선택]</strong>{' '}
-                Meta·당근 광고 성과 측정을 위한
-                추적 동의
-              </span>
-            </label>
-
-            <p
-              style={{
-                paddingLeft: 28,
-                margin: '5px 0 0',
-                fontSize: 12,
-                lineHeight: 1.7,
-                color: '#6b7280',
-              }}
-            >
-              동의 시 홈페이지 방문 및 견적 신청
-              완료 이벤트가 Meta와 당근에 전송될
-              수 있습니다. 동의하지 않아도 견적
-              신청이 가능합니다. 광고 추적 동의는
-              홈페이지의 광고 추적 설정에서
-              변경할 수 있습니다.
-            </p>
-          </div>
         </div>
-      </div>
 
-      <div ref={captchaRef} className="captcha" />
+        {canSubmit && (
+          <div
+            ref={captchaRef}
+            className="captcha"
+          />
+        )}
 
-      <button
-        className="btn primary full"
-        type="submit"
-        disabled={
-          !privacyConsent ||
-          !token ||
-          busy
-        }
-      >
-        {busy ? '접수 중...' : '무료 견적 신청'}
-      </button>
+        <button
+          className="btn primary full"
+          type="submit"
+          disabled={
+            !canSubmit ||
+            !privacyConsent ||
+            !token ||
+            busy
+          }
+        >
+          {busy
+            ? '접수 중...'
+            : canSubmit
+              ? '무료 견적 신청하기'
+              : '견적 신청 준비 중'}
+        </button>
+      </fieldset>
 
       {message && (
         <p
           role="status"
-          className={ok ? 'formSuccess' : 'formError'}
+          className={
+            ok ? 'formSuccess' : 'formError'
+          }
         >
           {message}
         </p>
