@@ -1,0 +1,111 @@
+
+/* HEYBIKE FIRST SCREEN STATISTICS */
+
+.heyFullHero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 28px;
+  padding-bottom: 28px;
+}
+
+.heyHeroStats {
+  position: relative;
+  z-index: 2;
+  width: min(1200px, 100%);
+  margin: auto auto 0;
+}
+
+.heyHeroStats .heyHeroStatsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.heyHeroStats .heyHeroStatCard {
+  min-width: 0;
+  padding: 18px 20px;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 14px;
+  background: rgba(12, 38, 65, 0.64);
+  color: #ffffff;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+.heyHeroStats .heyHeroStatLabel {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #e0efff;
+}
+
+.heyHeroStats .heyHeroStatNumber {
+  display: block;
+  font-size: clamp(24px, 3vw, 36px);
+  font-weight: 900;
+  line-height: 1.2;
+  letter-spacing: -1px;
+  font-variant-numeric: tabular-nums;
+}
+
+.heyHeroStats .heyHeroStatsNote {
+  margin: 9px 2px 0;
+  color: #e0efff;
+  font-size: 10px;
+  text-align: right;
+}
+
+@media (max-width: 800px) {
+  .heyFullHero {
+    gap: 22px;
+  }
+
+  .heyHeroStats .heyHeroStatsGrid {
+    gap: 8px;
+  }
+
+  .heyHeroStats .heyHeroStatCard {
+    padding: 14px 10px;
+  }
+
+  .heyHeroStats .heyHeroStatLabel {
+    font-size: 10px;
+  }
+
+  .heyHeroStats .heyHeroStatNumber {
+    font-size: clamp(17px, 3.5vw, 25px);
+  }
+}
+
+@media (max-width: 520px) {
+  .heyFullHero {
+    gap: 18px;
+  }
+
+  .heyHeroStats .heyHeroStatsGrid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  .heyHeroStats .heyHeroStatCard {
+    padding: 12px 7px;
+    border-radius: 10px;
+  }
+
+  .heyHeroStats .heyHeroStatLabel {
+    font-size: 9px;
+    line-height: 1.4;
+  }
+
+  .heyHeroStats .heyHeroStatNumber {
+    font-size: clamp(15px, 4vw, 20px);
+    letter-spacing: -0.5px;
+  }
+
+  .heyHeroStats .heyHeroStatsNote {
+    font-size: 9px;
+  }
+}
