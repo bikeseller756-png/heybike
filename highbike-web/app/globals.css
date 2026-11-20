@@ -1,5 +1,144 @@
 
-/* HEYBIKE FULLSCREEN MOTORCYCLE HERO */
+/* =========================================
+   HEYBIKE GLOBAL BASE
+========================================= */
+
+:root {
+  color-scheme: light;
+  font-family: Arial, "Noto Sans KR", sans-serif;
+  background: #ffffff;
+  color: #173b60;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  background: #ffffff;
+  color: #173b60;
+  font-family: Arial, "Noto Sans KR", sans-serif;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+a {
+  color: inherit;
+}
+
+.heySite {
+  min-height: 100vh;
+  overflow-x: clip;
+}
+
+.heySite img {
+  max-width: 100%;
+}
+
+/* =========================================
+   HEYBIKE HEADER
+========================================= */
+
+.heySite .heyHeader {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  width: 100%;
+  background: #ffffff;
+  border-bottom: 1px solid #d9ebf7;
+}
+
+.heySite .heyNav {
+  width: min(1200px, calc(100% - 48px));
+  min-height: 76px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.heySite .heyBrand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: #173b60;
+  text-decoration: none;
+  font-size: 24px;
+  font-weight: 900;
+  letter-spacing: -1px;
+}
+
+.heySite .heyBrandSymbol {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  background: #159be8;
+  color: #ffffff;
+  font-size: 25px;
+  font-weight: 900;
+}
+
+.heySite .heyLinks {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+}
+
+.heySite .heyLinks a {
+  color: #294b68;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 750;
+}
+
+.heySite .heyLinks a:hover {
+  color: #159be8;
+}
+
+.heySite .heyLinks .heyNavCta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 14px 20px;
+  border-radius: 9px;
+  background: #159be8;
+  color: #ffffff;
+  font-weight: 800;
+}
+
+.heySite .heyMenuButton {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  border: 1px solid #cce7f7;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #173b60;
+}
+
+/* =========================================
+   FULLSCREEN MOTORCYCLE HERO
+========================================= */
 
 .heyFullHero {
   position: relative;
@@ -42,7 +181,7 @@
 .heyFullHeroIntro {
   margin-bottom: 24px;
   text-align: center;
-  color: white;
+  color: #ffffff;
   text-shadow: 0 2px 12px rgba(0, 0, 0, 0.35);
 }
 
@@ -57,7 +196,7 @@
 
 .heyFullHeroIntro h1 {
   margin: 0 0 14px;
-  color: white;
+  color: #ffffff;
   font-size: clamp(34px, 3.5vw, 48px);
   font-weight: 900;
   line-height: 1.25;
@@ -72,13 +211,17 @@
   line-height: 1.7;
 }
 
+/* =========================================
+   CENTRAL CONSULTATION CARD
+========================================= */
+
 .heyFullHeroForm {
   width: 100%;
   padding: 30px 34px;
   border: 1px solid rgba(255, 255, 255, 0.25);
   border-radius: 20px;
-  background: rgba(13, 35, 61, 0.78);
-  color: white;
+  background: rgba(13, 35, 61, 0.82);
+  color: #ffffff;
   box-shadow: 0 20px 65px rgba(0, 0, 0, 0.22);
   backdrop-filter: blur(8px);
   scroll-margin-top: 95px;
@@ -98,7 +241,7 @@
 
 .heyFullHeroFormHeading h2 {
   margin: 12px 0;
-  color: white;
+  color: #ffffff;
   font-size: 30px;
   font-weight: 900;
   letter-spacing: -1px;
@@ -111,164 +254,250 @@
   line-height: 1.7;
 }
 
-/* Form text on dark overlay */
+/* =========================================
+   INQUIRY FORM
+========================================= */
 
-.heyFullHeroForm .formPanel,
-.heyFullHeroForm .fields label,
-.heyFullHeroForm .wideLabel,
-.heyFullHeroForm .consent {
+.heyFullHeroForm .formPanel {
+  display: block;
+  width: 100%;
   color: #ffffff;
 }
 
-.heyFullHeroForm .formPanel input:not([type="checkbox"]),
-.heyFullHeroForm .formPanel textarea,
-.heyFullHeroForm .formPanel select {
+.heyFullHeroForm .formPanel fieldset {
+  display: block;
+  width: 100%;
+  min-width: 0;
+}
+
+.heyFullHeroForm .fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px 14px;
+  width: 100%;
+}
+
+.heyFullHeroForm .fields label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+.heyFullHeroForm .fields input,
+.heyFullHeroForm .fields select,
+.heyFullHeroForm .fields textarea {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  height: 46px;
+  margin: 0;
+  padding: 0 13px;
+  border: 1px solid #c8e3f4;
+  border-radius: 9px;
+  outline: none;
   background: #ffffff;
   color: #173b60;
-  border-color: #c8e3f4;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: normal;
+  box-shadow: none;
 }
 
-.heyFullHeroForm .consent a {
-  color: #b7e8ff;
+.heyFullHeroForm .fields textarea {
+  min-height: 100px;
+  height: auto;
+  padding: 12px 13px;
+  resize: vertical;
 }
 
-.heyFullHeroForm .formHelp {
-  color: #d5e5f2;
+.heyFullHeroForm .fields input::placeholder,
+.heyFullHeroForm .fields textarea::placeholder {
+  color: #8194a7;
+  opacity: 1;
 }
+
+.heyFullHeroForm .fields input:focus,
+.heyFullHeroForm .fields select:focus,
+.heyFullHeroForm .fields textarea:focus {
+  border-color: #159be8;
+  box-shadow: 0 0 0 3px rgba(21, 155, 232, 0.18);
+}
+
+.heyFullHeroForm .fields input:disabled,
+.heyFullHeroForm .fields select:disabled,
+.heyFullHeroForm .fields textarea:disabled {
+  background: #f5f9fd;
+  color: #173b60;
+  opacity: 1;
+  cursor: not-allowed;
+  -webkit-text-fill-color: #173b60;
+}
+
+.heyFullHeroForm .fields input:disabled::placeholder {
+  color: #8797a7;
+  -webkit-text-fill-color: #8797a7;
+}
+
+.heyFullHeroForm .formPanel input[type="checkbox"] {
+  accent-color: #159be8;
+}
+
+/* =========================================
+   NOTICE
+========================================= */
 
 .heyFullHeroForm .notice {
+  display: block;
+  width: 100%;
+  padding: 13px 15px;
+  border: 1px solid #ead5a7;
+  border-radius: 9px;
   background: rgba(255, 246, 227, 0.96);
   color: #72521b;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.7;
+  word-break: keep-all;
 }
 
-@media (max-width: 800px) {
-  .heyFullHero {
-    min-height: 700px;
-    padding: 35px 16px 55px;
-  }
+/* =========================================
+   CONSENT AND PRIVACY
+========================================= */
 
-  .heyFullHeroBackground {
-    background-position: 62% center;
-  }
-
-  .heyFullHeroForm {
-    padding: 25px 22px;
-  }
+.heyFullHeroForm .formPanel fieldset > div {
+  max-width: 100%;
 }
 
-@media (max-width: 520px) {
-  .heyFullHero {
-    padding: 26px 12px 45px;
-  }
-
-  .heyFullHeroBackground {
-    background-position: 60% center;
-  }
-
-  .heyFullHeroIntro h1 {
-    font-size: 32px;
-  }
-
-  .heyFullHeroIntro p {
-    font-size: 12px;
-  }
-
-  .heyFullHeroForm {
-    padding: 22px 15px;
-    border-radius: 14px;
-  }
-
-  .heyFullHeroFormHeading h2 {
-    font-size: 25px;
-  }
-
-  .heyFullHeroForm .fields {
-    grid-template-columns: 1fr;
-  }
+.heyFullHeroForm .formPanel fieldset > div a {
+  color: #167bb9;
+  text-decoration: underline;
+  text-underline-offset: 2px;
 }
 
-/* HEYBIKE HEADER RESTORE */
-
-.heySite .heyHeader {
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  width: 100%;
-  background: #ffffff;
-  border-bottom: 1px solid #d9ebf7;
+.heyFullHeroForm .formPanel fieldset > div a:hover {
+  color: #0b5b91;
 }
 
-.heySite .heyNav {
-  width: min(1200px, calc(100% - 48px));
-  min-height: 76px;
-  margin: 0 auto;
+/* =========================================
+   SUBMIT BUTTON
+========================================= */
+
+.heyFullHeroForm .btn,
+.heyFullHeroForm button[type="submit"] {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 24px;
-}
-
-.heySite .heyBrand {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  color: #173b60;
-  text-decoration: none;
-  font-size: 24px;
-  font-weight: 900;
-  letter-spacing: -1px;
-}
-
-.heySite .heyBrandSymbol {
-  display: grid;
-  place-items: center;
-  width: 44px;
-  height: 44px;
-  border-radius: 10px;
-  background: #159be8;
-  color: white;
-  font-size: 25px;
-  font-weight: 900;
-}
-
-.heySite .heyLinks {
-  display: flex;
-  align-items: center;
-  gap: 30px;
-}
-
-.heySite .heyLinks a {
-  color: #294b68;
-  text-decoration: none;
-  font-size: 13px;
-  font-weight: 750;
-}
-
-.heySite .heyLinks a:hover {
-  color: #159be8;
-}
-
-.heySite .heyLinks .heyNavCta {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  padding: 14px 20px;
-  border-radius: 9px;
-  background: #159be8;
-  color: white;
-  font-weight: 800;
-}
-
-.heySite .heyMenuButton {
-  display: none;
   align-items: center;
   justify-content: center;
-  padding: 8px;
-  border: 1px solid #cce7f7;
-  border-radius: 8px;
-  background: white;
-  color: #173b60;
+  width: 100%;
+  min-height: 50px;
+  margin-top: 18px;
+  padding: 13px 18px;
+  border: 0;
+  border-radius: 10px;
+  background: #159be8;
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 800;
+  line-height: 1.4;
+  text-align: center;
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease;
 }
+
+.heyFullHeroForm button[type="submit"]:not(:disabled):hover {
+  background: #087fc5;
+  transform: translateY(-1px);
+}
+
+.heyFullHeroForm button[type="submit"]:disabled {
+  background: #5e8daa;
+  color: #e9f5ff;
+  opacity: 0.8;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.heyFullHeroForm .captcha {
+  margin-top: 16px;
+  min-height: 0;
+}
+
+.heyFullHeroForm .formSuccess {
+  margin: 14px 0 0;
+  color: #b5f5d2;
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.heyFullHeroForm .formError {
+  margin: 14px 0 0;
+  color: #ffd0d0;
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+/* =========================================
+   GENERAL PAGE SECTION FALLBACKS
+========================================= */
+
+.heySite section {
+  scroll-margin-top: 85px;
+}
+
+.heySite .heyHighlights,
+.heySite .heyProcess,
+.heySite .heyFaq,
+.heySite .heyFinalCta {
+  width: 100%;
+}
+
+.heySite .heyHighlights,
+.heySite .heyProcess,
+.heySite .heyFaq {
+  padding: 64px max(24px, calc((100vw - 1200px) / 2));
+}
+
+.heySite .heyHighlights {
+  background: #f2f9ff;
+}
+
+.heySite .heyProcess {
+  background: #ffffff;
+}
+
+.heySite .heyFaq {
+  background: #f7fbff;
+}
+
+.heySite .heyBanner,
+.heySite .heyFinalCta {
+  padding: 60px 24px;
+  text-align: center;
+}
+
+.heySite .heyBanner {
+  background: #e8f6ff;
+}
+
+.heySite .heyFinalCta {
+  background: #123a5d;
+  color: #ffffff;
+}
+
+.heySite .heyFooter {
+  padding: 36px 24px;
+  background: #0d263e;
+  color: #d6e7f4;
+}
+
+/* =========================================
+   TABLET
+========================================= */
 
 @media (max-width: 800px) {
   .heySite .heyNav {
@@ -290,12 +519,111 @@
     align-items: stretch;
     gap: 20px;
     padding: 22px;
-    background: white;
+    background: #ffffff;
     border-bottom: 1px solid #d9ebf7;
     box-shadow: 0 15px 30px rgba(23, 59, 96, 0.12);
   }
 
   .heySite .heyLinks.open {
     display: flex;
+  }
+
+  .heyFullHero {
+    min-height: 700px;
+    padding: 35px 16px 55px;
+  }
+
+  .heyFullHeroBackground {
+    background-position: 62% center;
+  }
+
+  .heyFullHeroForm {
+    padding: 25px 22px;
+  }
+
+  .heySite .heyHighlights,
+  .heySite .heyProcess,
+  .heySite .heyFaq {
+    padding: 50px 20px;
+  }
+}
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media (max-width: 520px) {
+  .heySite .heyNav {
+    width: calc(100% - 24px);
+    gap: 12px;
+  }
+
+  .heySite .heyBrand {
+    font-size: 20px;
+  }
+
+  .heySite .heyBrandSymbol {
+    width: 38px;
+    height: 38px;
+    font-size: 22px;
+  }
+
+  .heyFullHero {
+    padding: 26px 12px 45px;
+  }
+
+  .heyFullHeroBackground {
+    background-position: 60% center;
+  }
+
+  .heyFullHeroInner {
+    width: 100%;
+  }
+
+  .heyFullHeroIntro h1 {
+    font-size: 32px;
+  }
+
+  .heyFullHeroIntro p {
+    font-size: 12px;
+  }
+
+  .heyFullHeroForm {
+    padding: 22px 15px;
+    border-radius: 14px;
+  }
+
+  .heyFullHeroFormHeading h2 {
+    font-size: 25px;
+  }
+
+  .heyFullHeroForm .fields {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 14px;
+  }
+
+  .heyFullHeroForm .fields input,
+  .heyFullHeroForm .fields select {
+    height: 46px;
+    font-size: 14px;
+  }
+
+  .heyFullHeroForm .notice {
+    font-size: 12px;
+  }
+
+  .heyFullHeroForm .formPanel fieldset > div {
+    overflow-wrap: anywhere;
+  }
+
+  .heySite .heyHighlights,
+  .heySite .heyProcess,
+  .heySite .heyFaq {
+    padding: 40px 16px;
+  }
+
+  .heySite .heyBanner,
+  .heySite .heyFinalCta {
+    padding: 45px 16px;
   }
 }
