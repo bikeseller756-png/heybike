@@ -1,352 +1,163 @@
 
 'use client';
 
-import {
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
-import {
-  ChevronLeft,
-  ChevronRight,
-  Star,
-} from 'lucide-react';
-import './customer-reviews.css';
+import { useEffect, useState } from 'react';
 
-type Review = {
-  id: string;
-  model_name: string;
-  rating: number;
-  review_text: string;
-  sort_order: number;
-  created_at: string;
+type Stats = {
+  today: number;
+  total: number;
+  completed: number;
 };
 
-const AUTO_PLAY_MS = 4000;
-const TRANSITION_MS = 500;
-
-function getVisibleCount() {
-  if (typeof window === 'undefined') return 3;
-
-  if (window.innerWidth <= 640) return 1;
-  if (window.innerWidth <= 1024) return 2;
-
-  return 3;
+function koreaDateKey() {
+  return new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'Asia/Seoul',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  }).format(new Date());
 }
 
-export default function CustomerReviews() {
-  const [reviews, setReviews] = useState<Review[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [visibleCount, setVisibleCount] = useState(3);
-  const [index, setIndex] = useState(0);
-  const [transitionEnabled, setTransitionEnabled] =
-    useState(true);
-  const [paused, setPaused] = useState(false);
+function seededNumber(seed: string) {
+  let hash = 2166136261;
 
-  const trackRef = useRef<HTMLDivElement>(null);
-  const touchStartX = useRef<number | null>(null);
-  const indexRef = useRef(0);
-  const movingRef = useRef(false);
-  const resetTimerRef = useRef<
-    ReturnType<typeof setTimeout> | null
-  >(null);
+  for (let i = 0; i < seed.length; i++) {
+    hash ^= seed.charCodeAt(i);
+    hash = Math.imul(hash, 16777619);
+  }
+
+  return (hash >>> 0) / 4294967296;
+}
+
+function generateStats(dateKey: string): Stats {
+  // 매일 100~199건
+  const today =
+    100 + Math.floor(seededNumber(dateKey + '-today') * 100);
+
+  // 80,000~99,999건
+  const total =
+    80000 + Math.floor(seededNumber(dateKey + '-total') * 20000);
+
+  // 전체 상담 문의건수의 80%
+  const completed = Math.round(total * 0.8);
+
+  return { today, total, completed };
+}
+
+function formatCount(value: number) {
+  return `+${value.toLocaleString('ko-KR')}`;
+}
+
+export default function ConsultationStats() {
+  const [stats, setStats] = useState<Stats | null>(null);
 
   useEffect(() => {
-    let active = true;
-
-    async function loadReviews() {
-      try {
-        const response = await fetch('/api/reviews', {
-          cache: 'no-store',
-        });
-
-        if (!response.ok) {
-          throw new Error('후기 조회 실패');
-        }
-
-        const result = await response.json();
-
-        if (active) {
-          setReviews(
-            Array.isArray(result.reviews)
-              ? result.reviews
-              : []
-          );
-        }
-      } catch {
-        if (active) setReviews([]);
-      } finally {
-        if (active) setLoading(false);
-      }
-    }
-
-    void loadReviews();
-
-    return () => {
-      active = false;
+    const updateStats = () => {
+      setStats(generateStats(koreaDateKey()));
     };
+
+    updateStats();
+
+    // 날짜가 바뀌면 새로운 수치 반영
+    const interval = window.setInterval(updateStats, 60000);
+
+    return () => window.clearInterval(interval);
   }, []);
 
-  useEffect(() => {
-    const update = () => {
-      setVisibleCount(getVisibleCount());
-    };
-
-    update();
-    window.addEventListener('resize', update);
-
-    return () => {
-      window.removeEventListener('resize', update);
-    };
-  }, []);
-
-  const count = reviews.length;
-  const cloneCount = Math.min(visibleCount, count);
-  const hasCarousel = count > 1;
-
-  const displayedReviews = hasCarousel
-    ? [
-        ...reviews.slice(-cloneCount),
-        ...reviews,
-        ...reviews.slice(0, cloneCount),
-      ]
-    : reviews;
-
-  useEffect(() => {
-    indexRef.current = cloneCount;
-    setIndex(cloneCount);
-    setTransitionEnabled(false);
-    movingRef.current = false;
-
-    const frame = requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        setTransitionEnabled(true);
-      });
-    });
-
-    return () => {
-      cancelAnimationFrame(frame);
-    };
-  }, [cloneCount, count]);
-
-  const move = useCallback(
-    (direction: number) => {
-      if (!hasCarousel || movingRef.current) return;
-
-      movingRef.current = true;
-      setTransitionEnabled(true);
-
-      indexRef.current += direction;
-      setIndex(indexRef.current);
-    },
-    [hasCarousel]
-  );
-
-  function handleTransitionEnd() {
-    if (!hasCarousel) return;
-
-    const current = indexRef.current;
-
-    if (current >= count + cloneCount) {
-      const next = cloneCount;
-
-      setTransitionEnabled(false);
-      indexRef.current = next;
-      setIndex(next);
-    } else if (current < cloneCount) {
-      const next = count + cloneCount - 1;
-
-      setTransitionEnabled(false);
-      indexRef.current = next;
-      setIndex(next);
-    }
-
-    movingRef.current = false;
-  }
-
-  useEffect(() => {
-    if (!hasCarousel || paused) return;
-
-    const timer = window.setInterval(() => {
-      move(1);
-    }, AUTO_PLAY_MS);
-
-    return () => {
-      window.clearInterval(timer);
-    };
-  }, [hasCarousel, paused, move]);
-
-  useEffect(() => {
-    if (!hasCarousel || !transitionEnabled) return;
-
-    if (resetTimerRef.current) {
-      clearTimeout(resetTimerRef.current);
-    }
-
-    resetTimerRef.current = setTimeout(() => {
-      movingRef.current = false;
-    }, TRANSITION_MS + 150);
-
-    return () => {
-      if (resetTimerRef.current) {
-        clearTimeout(resetTimerRef.current);
-      }
-    };
-  }, [index, transitionEnabled, hasCarousel]);
-
-  function handleTouchStart(
-    event: React.TouchEvent<HTMLDivElement>
-  ) {
-    touchStartX.current = event.touches[0]?.clientX ?? null;
-    setPaused(true);
-  }
-
-  function handleTouchEnd(
-    event: React.TouchEvent<HTMLDivElement>
-  ) {
-    if (touchStartX.current === null) {
-      setPaused(false);
-      return;
-    }
-
-    const endX =
-      event.changedTouches[0]?.clientX ??
-      touchStartX.current;
-
-    const difference = touchStartX.current - endX;
-
-    if (Math.abs(difference) > 45) {
-      move(difference > 0 ? 1 : -1);
-    }
-
-    touchStartX.current = null;
-    setPaused(false);
-  }
-
-  if (loading || count === 0) {
-    return null;
-  }
+  if (!stats) return null;
 
   return (
     <section
-      className="heyReviews"
-      aria-label="HEYBIKE 고객 후기"
-      onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => setPaused(false)}
+      aria-label="상담 통계 예시"
+      style={{
+        background: '#1769c9',
+        padding: '64px 20px',
+        color: '#fff',
+      }}
     >
-      <div className="heyReviewsContainer">
-        <div className="heyReviewsHeading">
-          <div>
-            <span className="heyReviewsEyebrow">
-              REAL CUSTOMER REVIEWS
-            </span>
-
-            <h2>
-              고객이 직접 전하는
-              <br />
-              <strong>HEYBIKE 매입 후기</strong>
-            </h2>
-
-            <p>
-              실제 고객의 경험을 통해
-              HEYBIKE의 서비스를 확인하세요.
-            </p>
-          </div>
-
-          {hasCarousel && (
-            <div className="heyReviewsControls">
-              <button
-                type="button"
-                onClick={() => move(-1)}
-                aria-label="이전 후기"
-              >
-                <ChevronLeft size={23} />
-              </button>
-
-              <button
-                type="button"
-                onClick={() => move(1)}
-                aria-label="다음 후기"
-              >
-                <ChevronRight size={23} />
-              </button>
-            </div>
-          )}
-        </div>
-
-        <div
-          className="heyReviewsViewport"
-          onTouchStart={handleTouchStart}
-          onTouchEnd={handleTouchEnd}
-          onTouchCancel={() => {
-            touchStartX.current = null;
-            setPaused(false);
+      <div
+        style={{
+          maxWidth: 1200,
+          margin: '0 auto',
+        }}
+      >
+        <p
+          style={{
+            textAlign: 'center',
+            fontSize: 13,
+            opacity: 0.85,
+            marginBottom: 12,
           }}
         >
-          <div
-            ref={trackRef}
-            className="heyReviewsTrack"
-            style={{
-              transform: `translateX(calc(-${index} * (var(--review-card-width) + var(--review-gap))))`,
-              transition: transitionEnabled
-                ? `transform ${TRANSITION_MS}ms ease`
-                : 'none',
-            }}
-            onTransitionEnd={handleTransitionEnd}
-          >
-            {displayedReviews.map((review, position) => (
-              <article
-                className="heyReviewCard"
-                key={`${review.id}-${position}`}
+          HEYBIKE / SAMPLE STATISTICS
+        </p>
+
+        <h2
+          style={{
+            textAlign: 'center',
+            fontSize: 'clamp(24px, 4vw, 36px)',
+            fontWeight: 800,
+            marginBottom: 12,
+          }}
+        >
+          오토바이 상담 현황
+        </h2>
+
+        <p
+          style={{
+            textAlign: 'center',
+            fontSize: 13,
+            opacity: 0.85,
+            marginBottom: 36,
+          }}
+        >
+          화면 연출용 예시 수치입니다.
+        </p>
+
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns:
+              'repeat(auto-fit, minmax(220px, 1fr))',
+            gap: 16,
+          }}
+        >
+          {[
+            { label: '오늘의 예상 문의건수', value: stats.today },
+            { label: '전체 상담 문의건수 예시', value: stats.total },
+            { label: '예상 거래 성사 (80% 가정)', value: stats.completed },
+          ].map((item) => (
+            <div
+              key={item.label}
+              style={{
+                background: 'rgba(255,255,255,0.12)',
+                border: '1px solid rgba(255,255,255,0.25)',
+                borderRadius: 18,
+                padding: '30px 24px',
+                textAlign: 'center',
+              }}
+            >
+              <div
+                style={{
+                  fontSize: 'clamp(30px, 4vw, 44px)',
+                  fontWeight: 800,
+                  fontVariantNumeric: 'tabular-nums',
+                }}
               >
-                <div className="heyReviewImage">
-                  <img
-                    src={`/api/reviews/image?id=${encodeURIComponent(
-                      review.id
-                    )}`}
-                    alt={`${review.model_name} 매입 후기 사진`}
-                    loading="lazy"
-                  />
-                </div>
+                {formatCount(item.value)}
+              </div>
 
-                <div className="heyReviewContent">
-                  <span className="heyReviewModel">
-                    {review.model_name}
-                  </span>
-
-                  <div
-                    className="heyReviewStars"
-                    aria-label={`별점 ${review.rating}점`}
-                  >
-                    {Array.from({ length: 5 }).map((_, i) => (
-                      <Star
-                        key={i}
-                        size={17}
-                        fill={
-                          i < review.rating
-                            ? 'currentColor'
-                            : 'none'
-                        }
-                      />
-                    ))}
-                  </div>
-
-                  <p>{review.review_text}</p>
-                </div>
-              </article>
-            ))}
-          </div>
-        </div>
-
-        <div className="heyReviewsFooter">
-          <span>
-            HEYBIKE CUSTOMER EXPERIENCE
-          </span>
-
-          <span>
-            실제 고객 후기 · {count}건
-          </span>
+              <div
+                style={{
+                  marginTop: 12,
+                  fontSize: 15,
+                  fontWeight: 600,
+                }}
+              >
+                {item.label}
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </section>
