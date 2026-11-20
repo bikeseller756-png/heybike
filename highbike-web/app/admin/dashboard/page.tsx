@@ -1135,6 +1135,31 @@ export default function AdminDashboard() {
                           : ''}
                       </p>
                     )}
+
+                    {editingId &&
+                      reviewForm.image_path && (
+                        <div
+                          style={{
+                            marginTop: 12,
+                            borderRadius: 10,
+                            overflow: 'hidden',
+                            background: '#203d32',
+                          }}
+                        >
+                          <img
+                            src={`/api/reviews/image?id=${encodeURIComponent(
+                              editingId
+                            )}`}
+                            alt="수정 중인 고객 후기 사진"
+                            style={{
+                              display: 'block',
+                              width: '100%',
+                              aspectRatio: '4 / 3',
+                              objectFit: 'cover',
+                            }}
+                          />
+                        </div>
+                      )}
                   </div>
 
                   <div>
@@ -1430,27 +1455,41 @@ export default function AdminDashboard() {
                         style={{
                           background: '#203d32',
                           borderRadius: 9,
-                          padding: 20,
-                          textAlign: 'center',
-                          color: '#b2c9be',
+                          overflow: 'hidden',
                           marginBottom: 14,
+                          aspectRatio: '4 / 3',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
                         }}
                       >
-                        <ImagePlus
-                          size={30}
-                          style={{
-                            marginBottom: 8,
-                          }}
-                        />
-                        <div
-                          style={{
-                            fontSize: 12,
-                          }}
-                        >
-                          {review.image_path
-                            ? '사진 등록됨'
-                            : '사진 없음'}
-                        </div>
+                        {review.image_path ? (
+                          <img
+                            src={`/api/reviews/image?id=${encodeURIComponent(
+                              review.id
+                            )}`}
+                            alt={`${review.model_name} 고객 후기 사진`}
+                            loading="lazy"
+                            style={{
+                              width: '100%',
+                              height: '100%',
+                              objectFit: 'cover',
+                              display: 'block',
+                            }}
+                          />
+                        ) : (
+                          <div
+                            style={{
+                              textAlign: 'center',
+                              color: '#b2c9be',
+                            }}
+                          >
+                            <ImagePlus size={30} />
+                            <p style={{ fontSize: 12 }}>
+                              등록된 사진이 없습니다.
+                            </p>
+                          </div>
+                        )}
                       </div>
 
                       <strong
@@ -1551,6 +1590,9 @@ export default function AdminDashboard() {
                             ...buttonStyle,
                             padding: '9px 12px',
                             background: '#355346',
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: 5,
                           }}
                         >
                           <Pencil size={14} />
@@ -1569,6 +1611,9 @@ export default function AdminDashboard() {
                             ...buttonStyle,
                             padding: '9px 12px',
                             background: '#853d3d',
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: 5,
                           }}
                         >
                           <Trash2 size={14} />
@@ -1587,12 +1632,10 @@ export default function AdminDashboard() {
                   marginTop: 20,
                 }}
               >
-                사진 미리보기와 홈페이지
-                슬라이더는 다음 단계에서
-                연결합니다. 후기 삭제 시
-                데이터베이스 기록만 삭제되며,
-                Storage 사진 정리는 별도로
-                구현할 예정입니다.
+                공개된 후기는 홈페이지 슬라이더
+                연결 후 표시됩니다. 후기 삭제 시
+                데이터베이스 기록만 삭제되며
+                사진 파일 정리는 별도 작업입니다.
               </p>
             </section>
           </>
