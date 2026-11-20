@@ -333,3 +333,25 @@
     max-height: 230px;
   }
 }
+/* =========================================
+   HEYBIKE REVIEW SLIDER AUTO PLAY FIX
+========================================= */
+
+/* 마우스를 올려도 슬라이더 계속 이동 */
+.heySite .heyReviewsMarquee:hover .heyReviewsTrack {
+  animation-play-state: running;
+}
+
+/* 기본 자동 슬라이딩 활성화 */
+.heySite .heyReviewsMarquee:not(.heyReviewsPaused) .heyReviewsTrack {
+  animation-name: heyReviewsFlow;
+  animation-duration: 85s;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  animation-play-state: running;
+}
+
+/* 후기 전체보기 팝업이 열렸을 때만 정지 */
+.heySite .heyReviewsMarquee.heyReviewsPaused .heyReviewsTrack {
+  animation-play-state: paused !important;
+}
