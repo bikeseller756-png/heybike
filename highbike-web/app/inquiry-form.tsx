@@ -29,10 +29,6 @@ declare global {
       remove: (id: string) => void;
       reset: (id?: string) => void;
     };
-    fbq?: (...args: unknown[]) => void;
-    karrotPixel?: {
-      track?: (event: string) => void;
-    };
   }
 }
 
@@ -266,7 +262,7 @@ export default function InquiryForm() {
   ) {
     event.preventDefault();
 
-    // 비활성화 상태에서는 API 요청을 실행하지 않습니다.
+    // 비활성화 상태에서는 서버 요청을 실행하지 않습니다.
     if (!canSubmit) {
       return;
     }
@@ -287,7 +283,7 @@ export default function InquiryForm() {
     try {
       const data = new FormData(formRef.current);
 
-      // 기존 서버 API와 호환되는 빈 항목입니다.
+      // 기존 서버 API와의 호환성 유지
       data.set('model_year', '');
       data.set('mileage_km', '');
       data.set('condition_notes', '');
