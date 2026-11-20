@@ -5,43 +5,17 @@ import { useEffect, useState } from 'react';
 import './customer-reviews.css';
 
 type Review = {
-  id: string | number;
-  customer_name?: string;
-  name?: string;
-  motorcycle_model?: string;
-  model?: string;
-  review_text?: string;
-  content?: string;
-  rating?: number;
-  image_url?: string | null;
-  photo_url?: string | null;
-  image_urls?: string[];
+  id: string;
+  model_name: string | null;
+  rating: number | null;
+  review_text: string | null;
+  image_path: string | null;
 };
-
-function getName(review: Review) {
-  return review.customer_name || review.name || '고객 후기';
-}
-
-function getModel(review: Review) {
-  return review.motorcycle_model || review.model || '오토바이 매입';
-}
-
-function getContent(review: Review) {
-  return review.review_text || review.content || '';
-}
-
-function getImage(review: Review) {
-  return (
-    review.image_url ||
-    review.photo_url ||
-    review.image_urls?.[0] ||
-    null
-  );
-}
 
 export default function CustomerReviews() {
   const [reviews, setReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
     let active = true;
@@ -58,19 +32,19 @@ export default function CustomerReviews() {
 
         const result = await response.json();
 
-        const items: Review[] = Array.isArray(result)
-          ? result
-          : Array.isArray(result.reviews)
-            ? result.reviews
-            : Array.isArray(result.data)
-              ? result.data
-              : [];
+        const items: Review[] = Array.isArray(result.reviews)
+          ? result.reviews
+          : [];
 
         if (active) {
           setReviews(items);
         }
-      } catch (error) {
-        console.error('고객 후기 조회 오류:', error);
+      } catch (err) {
+        console.error('고객 후기 조회 오류:', err);
+
+        if (active) {
+          setError(true);
+        }
       } finally {
         if (active) {
           setLoading(false);
@@ -85,17 +59,25 @@ export default function CustomerReviews() {
     };
   }, []);
 
-  // 카드가 2개여도 자연스럽게 반복되도록 확장
+  // 후기 개수가 적어도 자연스럽게 반복
   const baseReviews =
     reviews.length > 0
       ? Array.from(
-          { length: Math.max(1, Math.ceil(6 / reviews.length)) },
+          {
+            length: Math.max(
+              6,
+              Math.ceil(6 / reviews.length) * reviews.length
+            ),
+          },
           (_, index) => reviews[index % reviews.length]
         )
       : [];
 
-  // 동일한 카드 배열을 두 번 연결해 무한 반복
-  const rollingReviews = [...baseReviews, ...baseReviews];
+  // 같은 배열을 2번 이어서 무한 흐름 구현
+  const rollingReviews = [
+    ...baseReviews,
+    ...baseReviews,
+  ];
 
   return (
     <section className="heyReviews">
@@ -123,6 +105,12 @@ export default function CustomerReviews() {
             고객 후기를 불러오는 중입니다.
           </div>
         </div>
+      ) : error ? (
+        <div className="heyContainer">
+          <div className="heyReviewsEmpty">
+            고객 후기를 불러오지 못했습니다.
+          </div>
+        </div>
       ) : reviews.length === 0 ? (
         <div className="heyContainer">
           <div className="heyReviewsEmpty">
@@ -132,48 +120,48 @@ export default function CustomerReviews() {
       ) : (
         <div className="heyReviewsMarquee">
           <div className="heyReviewsTrack">
-            {rollingReviews.map((review, index) => {
-              const image = getImage(review);
+            {rollingReviews.map((review, index) => (
+              <article
+                className="heyReviewCard"
+                key={`${review.id}-${index}`}
+                aria-hidden={index >= baseReviews.length}
+              >
+                <div className="heyReviewImage">
+                  <img
+                    src={`/api/admin/image?id=${encodeURIComponent(
+                      review.id
+                    )}`}
+                    alt={`${
+                      review.model_name || '오토바이'
+                    } 고객 후기 사진`}
+                    loading="lazy"
+                  />
+                </div>
 
-              return (
-                <article
-                  className="heyReviewCard"
-                  key={`${review.id}-${index}`}
-                  aria-hidden={index >= baseReviews.length}
-                >
-                  {image && (
-                    <div className="heyReviewImage">
-                      <img
-                        src={image}
-                        alt={getModel(review)}
-                        loading="lazy"
-                      />
-                    </div>
-                  )}
-
-                  <div className="heyReviewContent">
-                    <div className="heyReviewStars">
-                      {'★'.repeat(
-                        Math.min(
-                          5,
-                          Math.max(0, review.rating ?? 5)
-                        )
-                      )}
-                    </div>
-
-                    <h3>{getModel(review)}</h3>
-
-                    <p className="heyReviewText">
-                      {getContent(review)}
-                    </p>
-
-                    <strong className="heyReviewCustomer">
-                      {getName(review)}
-                    </strong>
+                <div className="heyReviewContent">
+                  <div className="heyReviewStars">
+                    {'★'.repeat(
+                      Math.min(
+                        5,
+                        Math.max(0, review.rating ?? 5)
+                      )
+                    )}
                   </div>
-                </article>
-              );
-            })}
+
+                  <h3>
+                    {review.model_name || '오토바이 매입'}
+                  </h3>
+
+                  <p className="heyReviewText">
+                    {review.review_text || ''}
+                  </p>
+
+                  <strong className="heyReviewCustomer">
+                    고객 후기
+                  </strong>
+                </div>
+              </article>
+            ))}
           </div>
         </div>
       )}
