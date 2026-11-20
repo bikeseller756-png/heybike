@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import './customer-reviews.css';
 
 type Review = {
-  id: string;
+  id: string | number;
   customer_name?: string;
   name?: string;
   motorcycle_model?: string;
@@ -15,11 +15,8 @@ type Review = {
   rating?: number;
   image_url?: string | null;
   photo_url?: string | null;
+  image_urls?: string[];
 };
-
-function getText(review: Review) {
-  return review.review_text || review.content || '';
-}
 
 function getName(review: Review) {
   return review.customer_name || review.name || '고객 후기';
@@ -29,9 +26,21 @@ function getModel(review: Review) {
   return review.motorcycle_model || review.model || '오토바이 매입';
 }
 
+function getContent(review: Review) {
+  return review.review_text || review.content || '';
+}
+
+function getImage(review: Review) {
+  return (
+    review.image_url ||
+    review.photo_url ||
+    review.image_urls?.[0] ||
+    null
+  );
+}
+
 export default function CustomerReviews() {
   const [reviews, setReviews] = useState<Review[]>([]);
-  const [index, setIndex] = useState(0);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -76,39 +85,17 @@ export default function CustomerReviews() {
     };
   }, []);
 
-  useEffect(() => {
-    if (reviews.length <= 1) return;
+  // 카드가 2개여도 자연스럽게 반복되도록 확장
+  const baseReviews =
+    reviews.length > 0
+      ? Array.from(
+          { length: Math.max(1, Math.ceil(6 / reviews.length)) },
+          (_, index) => reviews[index % reviews.length]
+        )
+      : [];
 
-    const timer = window.setInterval(() => {
-      setIndex((current) => (current + 1) % reviews.length);
-    }, 4000);
-
-    return () => window.clearInterval(timer);
-  }, [reviews.length]);
-
-  const previous = () => {
-    setIndex((current) =>
-      (current - 1 + reviews.length) % reviews.length
-    );
-  };
-
-  const next = () => {
-    setIndex((current) =>
-      (current + 1) % reviews.length
-    );
-  };
-
-  if (loading) {
-    return (
-      <section className="heyReviews">
-        <div className="heyContainer">
-          <p className="heyReviewsStatus">
-            고객 후기를 불러오는 중입니다.
-          </p>
-        </div>
-      </section>
-    );
-  }
+  // 동일한 카드 배열을 두 번 연결해 무한 반복
+  const rollingReviews = [...baseReviews, ...baseReviews];
 
   return (
     <section className="heyReviews">
@@ -128,91 +115,68 @@ export default function CustomerReviews() {
             실제 등록된 고객 후기를 확인해 보세요.
           </p>
         </div>
+      </div>
 
-        {reviews.length === 0 ? (
+      {loading ? (
+        <div className="heyContainer">
+          <div className="heyReviewsEmpty">
+            고객 후기를 불러오는 중입니다.
+          </div>
+        </div>
+      ) : reviews.length === 0 ? (
+        <div className="heyContainer">
           <div className="heyReviewsEmpty">
             등록된 고객 후기가 없습니다.
           </div>
-        ) : (
-          <>
-            <div className="heyReviewsViewport">
-              <div
-                className="heyReviewsTrack"
-                style={{
-                  transform: `translateX(-${index * 100}%)`,
-                }}
-              >
-                {reviews.map((review) => {
-                  const image =
-                    review.image_url || review.photo_url;
+        </div>
+      ) : (
+        <div className="heyReviewsMarquee">
+          <div className="heyReviewsTrack">
+            {rollingReviews.map((review, index) => {
+              const image = getImage(review);
 
-                  return (
-                    <article
-                      className="heyReviewSlide"
-                      key={review.id}
-                    >
-                      <div className="heyReviewCard">
-                        {image && (
-                          <div className="heyReviewImage">
-                            <img
-                              src={image}
-                              alt={`${getModel(review)} 고객 후기`}
-                              loading="lazy"
-                            />
-                          </div>
-                        )}
+              return (
+                <article
+                  className="heyReviewCard"
+                  key={`${review.id}-${index}`}
+                  aria-hidden={index >= baseReviews.length}
+                >
+                  {image && (
+                    <div className="heyReviewImage">
+                      <img
+                        src={image}
+                        alt={getModel(review)}
+                        loading="lazy"
+                      />
+                    </div>
+                  )}
 
-                        <div className="heyReviewContent">
-                          <span className="heyReviewStars">
-                            {'★'.repeat(
-                              Math.min(
-                                5,
-                                Math.max(0, review.rating ?? 5)
-                              )
-                            )}
-                          </span>
+                  <div className="heyReviewContent">
+                    <div className="heyReviewStars">
+                      {'★'.repeat(
+                        Math.min(
+                          5,
+                          Math.max(0, review.rating ?? 5)
+                        )
+                      )}
+                    </div>
 
-                          <h3>{getModel(review)}</h3>
+                    <h3>{getModel(review)}</h3>
 
-                          <p>
-                            {getText(review)}
-                          </p>
+                    <p className="heyReviewText">
+                      {getContent(review)}
+                    </p>
 
-                          <strong>
-                            {getName(review)}
-                          </strong>
-                        </div>
-                      </div>
-                    </article>
-                  );
-                })}
-              </div>
-            </div>
-
-            <div className="heyReviewsControls">
-              <button
-                type="button"
-                onClick={previous}
-                aria-label="이전 후기"
-              >
-                ‹
-              </button>
-
-              <span>
-                {index + 1} / {reviews.length}
-              </span>
-
-              <button
-                type="button"
-                onClick={next}
-                aria-label="다음 후기"
-              >
-                ›
-              </button>
-            </div>
-          </>
-        )}
-      </div>
+                    <strong className="heyReviewCustomer">
+                      {getName(review)}
+                    </strong>
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+        </div>
+      )}
     </section>
   );
 }
