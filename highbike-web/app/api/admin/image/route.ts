@@ -4,7 +4,7 @@ import { createClient } from '@supabase/supabase-js';
 import {
   ADMIN_COOKIE_NAME,
   verifyAdminSession,
-} from '../../../lib/admin-auth';
+} from '../../../../lib/admin-auth';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
