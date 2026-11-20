@@ -50,6 +50,12 @@ a {
   max-width: 100%;
 }
 
+.heyContainer {
+  width: min(1200px, calc(100% - 48px));
+  margin-left: auto;
+  margin-right: auto;
+}
+
 /* =========================================
    HEADER
 ========================================= */
@@ -64,9 +70,7 @@ a {
 }
 
 .heySite .heyNav {
-  width: min(1200px, calc(100% - 48px));
   min-height: 66px;
-  margin: 0 auto;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -82,6 +86,7 @@ a {
   font-size: 23px;
   font-weight: 900;
   letter-spacing: -1px;
+  white-space: nowrap;
 }
 
 .heySite .heyBrandSymbol {
@@ -124,6 +129,8 @@ a {
   color: #ffffff;
   font-weight: 800;
 }
+
+/* Mobile menu button */
 
 .heySite .heyMenuButton {
   display: none;
@@ -352,7 +359,7 @@ a {
 }
 
 /* =========================================
-   NOTICE
+   FORM NOTICE
 ========================================= */
 
 .heyFullHeroForm .notice {
@@ -496,66 +503,433 @@ a {
 }
 
 /* =========================================
-   OTHER PAGE SECTIONS
+   SECTION SHARED
 ========================================= */
 
 .heySite section {
   scroll-margin-top: 75px;
 }
 
-.heySite .heyHighlights,
-.heySite .heyProcess,
-.heySite .heyFaq,
-.heySite .heyFinalCta {
-  width: 100%;
+.heySectionTag {
+  display: inline-block;
+  margin-bottom: 15px;
+  color: #159be8;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 1.8px;
 }
 
-.heySite .heyHighlights,
-.heySite .heyProcess,
-.heySite .heyFaq {
-  padding: 64px max(24px, calc((100vw - 1200px) / 2));
+.heySectionHeading h2,
+.heyProcessHeading h2,
+.heyFaqGrid h2 {
+  margin: 0;
+  color: #123a5d;
+  font-size: clamp(29px, 3vw, 42px);
+  font-weight: 900;
+  line-height: 1.3;
+  letter-spacing: -1.4px;
+  word-break: keep-all;
 }
 
-.heySite .heyHighlights {
+.heySectionHeading h2 span {
+  color: #159be8;
+}
+
+/* =========================================
+   WHY HEYBIKE
+========================================= */
+
+.heyHighlights {
+  padding: 90px 0;
   background: #f2f9ff;
 }
 
-.heySite .heyProcess {
+.heyHighlights .heySectionHeading {
+  margin-bottom: 36px;
+}
+
+.heyHighlightsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 22px;
+}
+
+.heyHighlightCard {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 270px;
+  padding: 30px 28px;
+  border: 1px solid #dcecf7;
+  border-radius: 18px;
+  background: #ffffff;
+  box-shadow: 0 12px 32px rgba(23, 59, 96, 0.06);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.heyHighlightCard:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 18px 40px rgba(23, 59, 96, 0.11);
+}
+
+.heyHighlightIcon {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  margin-bottom: 24px;
+  border-radius: 15px;
+  background: #e8f6ff;
+  color: #159be8;
+}
+
+.heyHighlightCard h3 {
+  margin: 0 0 12px;
+  color: #123a5d;
+  font-size: 20px;
+  font-weight: 900;
+}
+
+.heyHighlightCard p {
+  margin: 0;
+  color: #60788e;
+  font-size: 14px;
+  line-height: 1.8;
+  word-break: keep-all;
+}
+
+.heyHighlightCard > span {
+  display: block;
+  margin-top: auto;
+  padding-top: 24px;
+  color: #159be8;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
+/* =========================================
+   HOW IT WORKS
+========================================= */
+
+.heyProcess {
+  padding: 90px 0;
   background: #ffffff;
 }
 
-.heySite .heyFaq {
+.heyProcessHeading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 30px;
+  margin-bottom: 38px;
+}
+
+.heyProcessHeading > p {
+  margin: 0 0 7px;
+  color: #60788e;
+  font-size: 15px;
+  line-height: 1.8;
+}
+
+.heySteps {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.heyStep {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 0;
+  min-height: 245px;
+  padding: 25px 22px;
+  border: 1px solid #dcecf7;
+  border-radius: 16px;
   background: #f7fbff;
 }
 
-.heySite .heyBanner,
-.heySite .heyFinalCta {
-  padding: 60px 24px;
+.heyStepNumber {
+  display: block;
+  margin-bottom: 28px;
+  color: #159be8;
+  font-size: 33px;
+  font-weight: 900;
+  letter-spacing: -1px;
+}
+
+.heyStep h3 {
+  margin: 0 0 11px;
+  color: #123a5d;
+  font-size: 18px;
+  font-weight: 900;
+}
+
+.heyStep p {
+  margin: 0;
+  color: #60788e;
+  font-size: 13px;
+  line-height: 1.75;
+  word-break: keep-all;
+}
+
+.heyStep > svg {
+  margin-top: auto;
+  align-self: flex-end;
+  color: #159be8;
+}
+
+/* =========================================
+   MID BANNER
+========================================= */
+
+.heyBanner {
+  padding: 58px 0;
+  background: linear-gradient(
+    115deg,
+    #e6f5ff 0%,
+    #d9efff 100%
+  );
+}
+
+.heyBannerInner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 32px;
+}
+
+.heyBannerInner > div > span {
+  display: block;
+  margin-bottom: 14px;
+  color: #159be8;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 1.5px;
+}
+
+.heyBannerInner h2 {
+  margin: 0;
+  color: #123a5d;
+  font-size: clamp(26px, 3vw, 38px);
+  font-weight: 900;
+  line-height: 1.35;
+  letter-spacing: -1px;
+}
+
+.heyBannerButton,
+.heyPrimaryButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 16px 24px;
+  border-radius: 10px;
+  background: #159be8;
+  color: #ffffff;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 900;
+  white-space: nowrap;
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+
+.heyBannerButton:hover,
+.heyPrimaryButton:hover {
+  background: #087fc5;
+  transform: translateY(-2px);
+}
+
+/* =========================================
+   FAQ
+========================================= */
+
+.heyFaq {
+  padding: 90px 0;
+  background: #f7fbff;
+}
+
+.heyFaqGrid {
+  display: grid;
+  grid-template-columns: 0.85fr 1.15fr;
+  align-items: start;
+  gap: 70px;
+}
+
+.heyFaqDescription {
+  margin: 18px 0 0;
+  color: #60788e;
+  font-size: 14px;
+  line-height: 1.8;
+}
+
+.heyFaqList {
+  display: grid;
+  gap: 12px;
+}
+
+.heyFaqItem {
+  overflow: hidden;
+  border: 1px solid #dcecf7;
+  border-radius: 12px;
+  background: #ffffff;
+}
+
+.heyFaqItem button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  width: 100%;
+  padding: 21px 22px;
+  border: 0;
+  background: transparent;
+  color: #123a5d;
+  text-align: left;
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.heyFaqItem button svg {
+  flex-shrink: 0;
+  color: #159be8;
+  transition: transform 0.2s ease;
+}
+
+.heyFaqItem button svg.active {
+  transform: rotate(180deg);
+}
+
+.heyFaqItem > p {
+  margin: 0;
+  padding: 0 22px 22px;
+  color: #60788e;
+  font-size: 14px;
+  line-height: 1.85;
+  word-break: keep-all;
+}
+
+/* =========================================
+   FINAL CTA
+========================================= */
+
+.heyFinalCta {
+  padding: 78px 24px;
+  background: #123a5d;
+  color: #ffffff;
   text-align: center;
 }
 
-.heySite .heyBanner {
-  background: #e8f6ff;
+.heyFinalInner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
 }
 
-.heySite .heyFinalCta {
-  background: #123a5d;
+.heyFinalInner > svg {
+  color: #91d8ff;
+}
+
+.heyFinalInner h2 {
+  margin: 0;
+  color: #ffffff;
+  font-size: clamp(28px, 3vw, 40px);
+  font-weight: 900;
+  line-height: 1.35;
+}
+
+.heyFinalInner .heyPrimaryButton {
+  margin-top: 8px;
+}
+
+/* =========================================
+   FOOTER
+========================================= */
+
+.heyFooter {
+  padding: 40px 0 25px;
+  background: #0d263e;
+  color: #d6e7f4;
+}
+
+.heyFooterTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding-bottom: 25px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+.heyFooter .heyBrand {
   color: #ffffff;
 }
 
-.heySite .heyFooter {
-  padding: 36px 24px;
-  background: #0d263e;
+.heyFooterLinks {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.heyFooterLinks a {
   color: #d6e7f4;
+  text-decoration: none;
+  font-size: 12px;
+}
+
+.heyFooterLinks a:hover {
+  color: #91d8ff;
+}
+
+.heyFooterNotice {
+  margin: 24px 0 18px;
+  color: #a8bfd1;
+  font-size: 12px;
+  line-height: 1.8;
+}
+
+.heyCopyright {
+  color: #7895ac;
+  font-size: 11px;
+  letter-spacing: 0.5px;
 }
 
 /* =========================================
    TABLET
 ========================================= */
 
+@media (max-width: 900px) {
+  .heyHighlightsGrid {
+    gap: 14px;
+  }
+
+  .heyHighlightCard {
+    padding: 24px 20px;
+  }
+
+  .heySteps {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .heyFaqGrid {
+    gap: 35px;
+  }
+}
+
 @media (max-width: 800px) {
-  .heySite .heyNav {
+  .heyContainer {
     width: calc(100% - 32px);
+  }
+
+  .heySite .heyNav {
     min-height: 66px;
   }
 
@@ -583,7 +957,6 @@ a {
   }
 
   .heyFullHero {
-    min-height: calc(100vh - 66px);
     padding: 20px 16px 35px;
   }
 
@@ -592,13 +965,29 @@ a {
   }
 
   .heyFullHeroForm {
-    padding: 18px 18px;
+    padding: 18px;
   }
 
-  .heySite .heyHighlights,
-  .heySite .heyProcess,
-  .heySite .heyFaq {
-    padding: 50px 20px;
+  .heyHighlights,
+  .heyProcess,
+  .heyFaq {
+    padding: 65px 0;
+  }
+
+  .heyHighlightsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .heyHighlightCard {
+    min-height: 220px;
+  }
+
+  .heyFaqGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .heyBannerInner {
+    align-items: flex-start;
   }
 }
 
@@ -607,9 +996,8 @@ a {
 ========================================= */
 
 @media (max-width: 520px) {
-  .heySite .heyNav {
+  .heyContainer {
     width: calc(100% - 24px);
-    gap: 12px;
   }
 
   .heySite .heyBrand {
@@ -670,14 +1058,57 @@ a {
     font-size: 11px;
   }
 
-  .heySite .heyHighlights,
-  .heySite .heyProcess,
-  .heySite .heyFaq {
-    padding: 40px 16px;
+  .heyHighlights,
+  .heyProcess,
+  .heyFaq {
+    padding: 50px 0;
   }
 
-  .heySite .heyBanner,
-  .heySite .heyFinalCta {
-    padding: 45px 16px;
+  .heyHighlightsGrid,
+  .heySteps {
+    grid-template-columns: 1fr;
+  }
+
+  .heyHighlightCard,
+  .heyStep {
+    min-height: auto;
+  }
+
+  .heyProcessHeading {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .heyBanner {
+    padding: 45px 0;
+  }
+
+  .heyBannerInner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 25px;
+  }
+
+  .heyFaqItem button {
+    padding: 18px 16px;
+    font-size: 14px;
+  }
+
+  .heyFaqItem > p {
+    padding: 0 16px 18px;
+  }
+
+  .heyFinalCta {
+    padding: 60px 16px;
+  }
+
+  .heyFooterTop {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .heyFooterLinks {
+    gap: 14px;
   }
 }
