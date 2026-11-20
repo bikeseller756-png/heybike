@@ -1,70 +1,143 @@
 
 /* =========================================
-   HEYBIKE REVIEW DESIGN UPDATE
-   제목 한 줄 + 사진 확대 + 가독성 개선
+   HEYBIKE CUSTOMER REVIEWS
+   Infinite Slider + Review Modal
 ========================================= */
 
-/* 제목 한 줄 표시 */
+/* 후기 영역 */
+.heySite .heyReviews {
+  width: 100%;
+  padding: 85px 0 75px;
+  overflow: hidden;
+  background: #ffffff;
+}
+
+/* 제목 */
+.heySite .heyReviewsHeading {
+  margin-bottom: 34px;
+}
+
 .heySite .heyReviewsHeading h2 {
+  margin: 14px 0 16px;
   font-size: clamp(24px, 2.7vw, 40px);
+  font-weight: 900;
   line-height: 1.35;
   letter-spacing: -1.5px;
+  color: #123a5d;
   word-break: keep-all;
 }
 
-/* 후기 슬라이더 */
+.heySite .heyReviewsHeading p {
+  margin: 0;
+  font-size: 14px;
+  color: #607f99;
+}
+
+/* 후기 로딩 및 빈 상태 */
+.heySite .heyReviewsEmpty {
+  padding: 50px 20px;
+  text-align: center;
+  color: #607f99;
+  background: #f7fbff;
+  border: 1px solid #dcecf7;
+  border-radius: 18px;
+}
+
+/* =========================================
+   INFINITE SLIDER
+========================================= */
+
+/* 슬라이더 표시 영역 */
 .heySite .heyReviewsMarquee {
   width: 100%;
   overflow: hidden;
   padding: 12px 0 24px;
 }
 
-/* 기존 부드러운 무한 이동 유지 */
+/* 실제 움직이는 트랙 */
 .heySite .heyReviewsMarquee .heyReviewsTrack {
   display: flex;
+  flex-direction: row;
   flex-wrap: nowrap;
   align-items: stretch;
   gap: 22px;
+
   width: max-content;
   max-width: none;
+
   animation: heyReviewsFlow 85s linear infinite;
+  animation-play-state: running;
+  will-change: transform;
 }
 
-/* 카드 크기 확대 */
+/* 무한 슬라이딩 핵심 애니메이션 */
+@keyframes heyReviewsFlow {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+
+  to {
+    transform: translate3d(
+      calc(-50% - 11px),
+      0,
+      0
+    );
+  }
+}
+
+/* 마우스를 올려도 계속 이동 */
+.heySite .heyReviewsMarquee:hover .heyReviewsTrack {
+  animation-play-state: running;
+}
+
+/* 전체보기 팝업이 열렸을 때만 정지 */
+.heySite .heyReviewsMarquee.heyReviewsPaused .heyReviewsTrack,
+.heySite .heyReviewsMarquee.heyReviewsPaused:hover .heyReviewsTrack {
+  animation-play-state: paused !important;
+}
+
+/* =========================================
+   REVIEW CARD
+========================================= */
+
 .heySite .heyReviewsMarquee .heyReviewCard {
   display: flex;
   flex-direction: column;
+
   flex: 0 0 420px;
   width: 420px;
   min-width: 420px;
   max-width: 420px;
+
   height: 550px;
   min-height: 550px;
-  box-sizing: border-box;
+
   overflow: hidden;
+  box-sizing: border-box;
+
   border-radius: 20px;
-  background: #f7fbff;
   border: 1px solid #dcecf7;
+  background: #f7fbff;
+  box-shadow: 0 8px 25px rgba(15, 55, 85, 0.05);
 }
 
-/* 사진 영역 확대 */
+/* 사진 영역 */
 .heySite .heyReviewsMarquee .heyReviewImage {
   display: block;
+  flex: 0 0 280px;
+
   width: 100%;
   height: 280px;
   min-height: 280px;
-  max-height: 280px;
+
   overflow: hidden;
   background: #e8f3fb;
 }
 
-/* 사진 비율 유지하며 꽉 채우기 */
 .heySite .heyReviewsMarquee .heyReviewImage img {
   display: block;
   width: 100%;
   height: 100%;
-  min-height: 0;
-  max-height: none;
   object-fit: cover;
   object-position: center;
 }
@@ -75,146 +148,62 @@
   flex-direction: column;
   flex: 1;
   min-width: 0;
+  min-height: 0;
   padding: 24px 26px;
+}
+
+/* 별점 */
+.heySite .heyReviewStars {
+  color: #ff9d00;
+  font-size: 23px;
+  letter-spacing: 2px;
+  line-height: 1.2;
 }
 
 /* 모델명 */
 .heySite .heyReviewsMarquee .heyReviewContent h3 {
-  margin: 12px 0;
+  margin: 14px 0 12px;
   font-size: 22px;
+  font-weight: 900;
   line-height: 1.4;
+  color: #123a5d;
   word-break: keep-all;
 }
 
-/* 후기 본문 */
-.heySite .heyReviewsMarquee .heyReviewText {
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 5;
-  line-clamp: 5;
-  overflow: hidden;
-  margin: 0 0 16px;
-  font-size: 14px;
-  line-height: 1.8;
-  word-break: keep-all;
-  overflow-wrap: break-word;
-}
-
-/* 작성자 */
-.heySite .heyReviewsMarquee .heyReviewCustomer {
-  margin-top: auto;
-  font-size: 13px;
-}
-
-/* 태블릿 */
-@media (max-width: 800px) {
-  .heySite .heyReviewsMarquee .heyReviewCard {
-    flex-basis: 350px;
-    width: 350px;
-    min-width: 350px;
-    max-width: 350px;
-    height: 510px;
-    min-height: 510px;
-  }
-
-  .heySite .heyReviewsMarquee .heyReviewImage {
-    height: 235px;
-    min-height: 235px;
-    max-height: 235px;
-  }
-
-  .heySite .heyReviewsMarquee .heyReviewsTrack {
-    gap: 16px;
-    animation-duration: 90s;
-  }
-
-  .heySite .heyReviewsHeading h2 {
-    font-size: 28px;
-  }
-}
-
-/* 모바일 */
-@media (max-width: 520px) {
-  .heySite .heyReviewsHeading h2 {
-    font-size: 22px;
-    letter-spacing: -0.8px;
-  }
-
-  .heySite .heyReviewsMarquee .heyReviewCard {
-    flex-basis: 310px;
-    width: 310px;
-    min-width: 310px;
-    max-width: 310px;
-    height: 470px;
-    min-height: 470px;
-  }
-
-  .heySite .heyReviewsMarquee .heyReviewImage {
-    height: 215px;
-    min-height: 215px;
-    max-height: 215px;
-  }
-
-  .heySite .heyReviewsMarquee .heyReviewContent {
-    padding: 18px 20px;
-  }
-
-  .heySite .heyReviewsMarquee .heyReviewContent h3 {
-    font-size: 19px;
-  }
-
-  .heySite .heyReviewsMarquee .heyReviewText {
-    font-size: 13px;
-    -webkit-line-clamp: 4;
-    line-clamp: 4;
-  }
-
-  .heySite .heyReviewsMarquee .heyReviewsTrack {
-    gap: 12px;
-    animation-duration: 95s;
-  }
-}
-
-/* =========================================
-   REVIEW PREVIEW + FULL REVIEW MODAL
-========================================= */
-
-/* 카드 높이 및 내용 배치 */
-.heySite .heyReviewsMarquee .heyReviewCard {
-  height: 550px;
-  min-height: 550px;
-}
-
-.heySite .heyReviewsMarquee .heyReviewContent {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  min-height: 0;
-}
-
-/* 후기 미리보기 3줄만 표시 */
+/* 후기 3줄 미리보기 */
 .heySite .heyReviewsMarquee .heyReviewText {
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 3;
   line-clamp: 3;
+
   overflow: hidden;
   white-space: normal;
   text-overflow: ellipsis;
-  overflow-wrap: break-word;
-  word-break: keep-all;
-  line-height: 1.8;
+
   max-height: 5.4em;
-  margin-bottom: 18px;
+  margin: 0 0 16px;
+
+  font-size: 14px;
+  line-height: 1.8;
+  color: #526f87;
+
+  word-break: keep-all;
+  overflow-wrap: break-word;
 }
 
-/* 전체보기 버튼 */
+/* 후기 전체보기 */
 .heySite .heyReviewReadMore {
+  display: inline-flex;
+  align-items: center;
   align-self: flex-start;
+
   margin-top: auto;
   padding: 8px 0;
+
   border: 0;
   background: transparent;
+
   color: #159be8;
   font-size: 14px;
   font-weight: 800;
@@ -225,40 +214,47 @@
   text-decoration: underline;
 }
 
-/* 팝업 열림 상태에서 슬라이더 정지 */
-.heyReviewsPaused .heyReviewsTrack {
-  animation-play-state: paused !important;
+.heySite .heyReviewReadMore:focus-visible {
+  outline: 2px solid #159be8;
+  outline-offset: 4px;
 }
 
-/* 팝업 배경 */
+/* =========================================
+   REVIEW MODAL
+========================================= */
+
 .heyReviewModalBackdrop {
   position: fixed;
   inset: 0;
   z-index: 99999;
+
   display: flex;
   align-items: center;
   justify-content: center;
+
   padding: 20px;
   background: rgba(8, 22, 38, 0.7);
 }
 
-/* 팝업 */
 .heyReviewModal {
-  width: min(640px, 100%);
-  max-height: 90vh;
   display: flex;
   flex-direction: column;
+
+  width: min(640px, 100%);
+  max-height: 90vh;
+
   overflow: hidden;
   border-radius: 20px;
   background: #ffffff;
+
   box-shadow: 0 25px 70px rgba(0, 0, 0, 0.25);
 }
 
-/* 팝업 상단 */
 .heyReviewModalHeader {
   display: flex;
   align-items: center;
   justify-content: space-between;
+
   padding: 18px 24px;
   border-bottom: 1px solid #e5edf5;
 }
@@ -273,17 +269,19 @@
 .heyReviewModalHeader button {
   display: grid;
   place-items: center;
+
   width: 36px;
   height: 36px;
+
   border: 0;
   border-radius: 50%;
   background: #eef5fa;
+
   color: #123a5d;
   font-size: 27px;
   cursor: pointer;
 }
 
-/* 팝업 본문 */
 .heyReviewModalBody {
   padding: 24px;
   overflow-y: auto;
@@ -293,10 +291,12 @@
   display: block;
   width: 100%;
   max-height: 340px;
-  object-fit: contain;
-  border-radius: 12px;
-  background: #eef5fa;
+
   margin-bottom: 20px;
+  border-radius: 12px;
+
+  object-fit: contain;
+  background: #eef5fa;
 }
 
 .heyReviewModalBody h3 {
@@ -306,6 +306,7 @@
 }
 
 .heyReviewModalText {
+  margin: 0;
   color: #526f87;
   font-size: 15px;
   line-height: 1.9;
@@ -313,11 +314,88 @@
   overflow-wrap: anywhere;
 }
 
-/* 모바일 */
-@media (max-width: 520px) {
+/* =========================================
+   TABLET
+========================================= */
+
+@media (max-width: 800px) {
+  .heySite .heyReviews {
+    padding: 65px 0;
+  }
+
+  .heySite .heyReviewsHeading h2 {
+    font-size: 28px;
+  }
+
+  .heySite .heyReviewsMarquee .heyReviewsTrack {
+    gap: 16px;
+    animation-duration: 90s;
+  }
+
   .heySite .heyReviewsMarquee .heyReviewCard {
+    flex-basis: 350px;
+    width: 350px;
+    min-width: 350px;
+    max-width: 350px;
+
+    height: 510px;
+    min-height: 510px;
+  }
+
+  .heySite .heyReviewsMarquee .heyReviewImage {
+    flex-basis: 235px;
+    height: 235px;
+    min-height: 235px;
+  }
+}
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media (max-width: 520px) {
+  .heySite .heyReviews {
+    padding: 50px 0;
+  }
+
+  .heySite .heyReviewsHeading h2 {
+    font-size: 22px;
+    letter-spacing: -0.8px;
+  }
+
+  .heySite .heyReviewsMarquee .heyReviewsTrack {
+    gap: 12px;
+    animation-duration: 95s;
+  }
+
+  .heySite .heyReviewsMarquee .heyReviewCard {
+    flex-basis: 310px;
+    width: 310px;
+    min-width: 310px;
+    max-width: 310px;
+
     height: 470px;
     min-height: 470px;
+  }
+
+  .heySite .heyReviewsMarquee .heyReviewImage {
+    flex-basis: 215px;
+    height: 215px;
+    min-height: 215px;
+  }
+
+  .heySite .heyReviewsMarquee .heyReviewContent {
+    padding: 18px 20px;
+  }
+
+  .heySite .heyReviewsMarquee .heyReviewContent h3 {
+    font-size: 19px;
+  }
+
+  .heySite .heyReviewsMarquee .heyReviewText {
+    font-size: 13px;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
   }
 
   .heyReviewModalBackdrop {
@@ -332,26 +410,4 @@
   .heyReviewModalImage {
     max-height: 230px;
   }
-}
-/* =========================================
-   HEYBIKE REVIEW SLIDER AUTO PLAY FIX
-========================================= */
-
-/* 마우스를 올려도 슬라이더 계속 이동 */
-.heySite .heyReviewsMarquee:hover .heyReviewsTrack {
-  animation-play-state: running;
-}
-
-/* 기본 자동 슬라이딩 활성화 */
-.heySite .heyReviewsMarquee:not(.heyReviewsPaused) .heyReviewsTrack {
-  animation-name: heyReviewsFlow;
-  animation-duration: 85s;
-  animation-timing-function: linear;
-  animation-iteration-count: infinite;
-  animation-play-state: running;
-}
-
-/* 후기 전체보기 팝업이 열렸을 때만 정지 */
-.heySite .heyReviewsMarquee.heyReviewsPaused .heyReviewsTrack {
-  animation-play-state: paused !important;
 }
