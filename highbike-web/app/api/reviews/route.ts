@@ -32,7 +32,7 @@ export async function GET() {
     const { data, error } = await supabase
       .from('customer_reviews')
       .select(
-        'id,model_name,rating,review_text,sort_order,created_at'
+        'id,model_name,rating,review_text,image_path,sort_order,created_at'
       )
       .eq('is_published', true)
       .not('image_path', 'is', null)
@@ -41,6 +41,8 @@ export async function GET() {
       .limit(100);
 
     if (error) {
+      console.error('후기 조회 오류:', error.message);
+
       return NextResponse.json(
         { error: '고객 후기를 불러오지 못했습니다.' },
         {
@@ -62,7 +64,9 @@ export async function GET() {
         },
       }
     );
-  } catch {
+  } catch (error) {
+    console.error('후기 API 오류:', error);
+
     return NextResponse.json(
       { error: '후기 조회 중 오류가 발생했습니다.' },
       {
